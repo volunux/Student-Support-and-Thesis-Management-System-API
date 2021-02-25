@@ -4,15 +4,13 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
 
-'user' : 'postgres' ,
+'connectionString' : process.env.DATABASE_URL ,
 
-'host' : '127.0.0.1',
+'ssl': {
+    'rejectUnauthorized': false
+  }
 
-'database' : 'store',
-
-'password' : '12345',
-
-'port' : '5432'});
+});
 
 // pool.query(COUNTRY.CREATE_TABLE , (err, res) => {
 

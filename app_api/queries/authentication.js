@@ -130,6 +130,16 @@ module.exports = {
 	
 	} ,
 
+	'role$' : (req , res , opts) => {
+
+		let query = `SELECT role_id AS _id , name
+
+									FROM ROLE`;
+
+		return query;
+	
+	} ,
+
 	'verifyEmail' : (req , res , opts) => {
 
 		let b = req.body;

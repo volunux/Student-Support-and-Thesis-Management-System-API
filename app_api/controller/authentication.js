@@ -30,6 +30,8 @@ module.exports = (opts) => {
 
 				'Level' : (callback) => { db.query(query$.level$(req , res , {}) , [] , callback); } ,
 
+				'Role' : (callback) => { db.query(query$.role$(req , res , {}) , [] , callback); } ,
+
 				'Country' : (callback) => { db.query(query$.country$(req , res , {}) , [] , callback); } ,
 
 				} , (err , result) => {
@@ -53,6 +55,8 @@ module.exports = (opts) => {
 							$result['Faculty'] = result.Faculty.rows;
 
 							$result['Level'] = result.Level.rows;
+
+							$result['Role'] = result.Role.rows;
 
 							$result['Country'] = result.Country.rows;
 

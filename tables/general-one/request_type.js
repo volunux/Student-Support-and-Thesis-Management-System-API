@@ -7,7 +7,7 @@ module.exports = {
 										request_type_id 	SERIAL NOT NULL,
 										name 							VARCHAR(150) NOT NULL,
 										abbreviation 			VARCHAR(8) NOT NULL,
-										title 			VARCHAR(200),
+										title 						VARCHAR(200),
 										description 			VARCHAR(250) DEFAULT 'Not Available',
 
 										created_on 				DATE NOT NULL DEFAULT CURRENT_DATE,
