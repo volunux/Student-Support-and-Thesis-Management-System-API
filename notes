@@ -1,0 +1,52 @@
+do not forget to filter remove validations keys from schema who do not need it.
+
+Review text is undefined if not added.
+
+{
+    "_id": 35,
+    "application_number": "155dd75a-9aee-40de-ad1b-807be2526db3",
+    "message": "Hello World",
+    "slug": "engoqmybdvidpmtmxbumxjcea81gj",
+    "unit": 3,
+    "request_type": 1,
+    "status": "Review",
+    "author": {
+        "email_address": "volunux@gmail.com",
+        "_id": 1
+    },
+    "entry_handler": {
+        "email_address": "volunux@gmail.com",
+        "_id": 1
+    },
+    "timeline": [
+        {
+            "text": "undefined",
+            "status_id": 1,
+            "slug": "c7i8seecvzbltz3audwpiwgvvb3do",
+            "author": {
+                "full_name": "Yusuf Musa",
+                "_id": 1
+            },
+            "entry_handler": {
+                "full_name": "Yusuf Musa",
+                "_id": 1
+            },
+            "unit": 3,
+            "replies": null
+        }
+
+Have to create form validators for request-credentials because it doesn't have one
+
+I need to unlock access control from confirm-user roleType
+
+Inspect how to add upload change profile picture and signature
+
+I have to learn to add a user without null and undefined and also send a message to  the user
+
+I want to also add a user with all password as an administrator still missing
+
+Each validation field of the request body must have a minimum set of characters;
+
+Can't see review message for a refund entry when loading timeline
+
+Titlte Remain the same even after navigating away from component. For example Faculty Payment remains even after closing Faculty Payment.
