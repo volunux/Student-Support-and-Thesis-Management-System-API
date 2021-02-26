@@ -46,6 +46,12 @@ module.exports = {
 
 		expiry.setDate(expiry.getDate() + 7);
 
+		console.log('Trying to confirm Key');
+
+		console.log(process.env.JWT_SECRET);
+
+		console.log('Trying to confirm Key');
+
 		return jwt.sign({
 
 			'_id' : u._id ,
