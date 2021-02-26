@@ -23,7 +23,7 @@ module.exports = {
 										salt						TEXT,
 
 										reset_password_token 		TEXT,
-										reset_password_expires 	DATE,
+										reset_password_expires 	TEXT,
 
 										department_id 					INT NOT NULL,
 										faculty_id 							INT NOT NULL,

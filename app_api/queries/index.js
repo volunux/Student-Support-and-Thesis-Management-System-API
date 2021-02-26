@@ -18,9 +18,11 @@ module.exports = {
 
 	'entryforgotPassword$s' : (req , res , opts) => {
 
+		let passwordTime = (Date.now() + 3600000);
+
 		let query = `UPDATE USERS AS u
 
-									SET reset_password_token = $1 , reset_password_expires = ${(Date.now() + 3600000)}
+									SET reset_password_token = $1 , reset_password_expires = $$${passwordTime}$$
 
 									FROM USER_STATUS AS us
 
