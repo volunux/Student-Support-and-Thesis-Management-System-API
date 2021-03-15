@@ -24,6 +24,7 @@ let refundStage = require('./general-one/refund-stage');
 let requestType = require('./general-one/request-type');
 let paymentType = require('./general-one/payment-type');
 let paymentSession = require('./general-one/payment-session');
+let requestMessageTemplate = require('./general-one/request-message-template');
 
 /** General One Routes **/
 
@@ -60,6 +61,7 @@ let userSignature = require('./general-four/user-signature');
 
 /** Common Routes **/
 
+let statistic = require('./statistic');
 let admin = require('./common/admin');
 let user = require('./common/user');
 let payment = require('./common/payment');
@@ -125,11 +127,13 @@ module.exports = (app) => {
 
 /** Common Routes **/
 
-		app.use('/api/admin' , cUser.roleType(['administrator' , 'superAdministrator']) , admin);
+		app.use('/api/admin' , cUser.roleType(privilege.sPrivilege.slice(1)) , admin);
+		app.use('/api/statistic' , cUser.roleType(privilege.sPrivilege.slice(1)) , statistic);
 		app.use('/api/user' , /*cUser.isUserPending ,*/ cUser.roleType([...privilege.all]) , user);
 		app.use('/api/general-payment' , payment);
 		app.use('/api/general-request' , generalRequest);
 		app.use('/api/refund' , refund);
+		app.use('/api/request-message-template' , requestMessageTemplate );
 
 /** Common Routes **/
 

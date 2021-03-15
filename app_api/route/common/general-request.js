@@ -52,6 +52,8 @@ let opts = {
 
 let ectrl = require('../../controller/general-request')(opts);
 
+let others = require('../../controller/others')(opts);
+
 let validator = require('../../validators/register')(opts);
 
 
@@ -62,7 +64,17 @@ router.route('/manage')
 
 router.route('/status')
 
-			.get(ectrl.manageStatus);
+			.get(others.manageStatus);
+
+
+router.route('/message-template')
+
+			.get(others.manageMessageTemplate);
+
+
+router.route('/message-template/entry/:entry/detail')
+
+			.get(others.messageTemplateEntryDetail);
 
 
 router.route('/manage/t/:request')

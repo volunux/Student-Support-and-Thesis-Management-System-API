@@ -18,26 +18,6 @@ module.exports = (opts) => {
 
 	return {
 
-		'manageStatus' : (req , res , next) => {
-
-			let plan = query$.status$(req , res , {});
-
-			db.query(plan , [] , (err , result) => {
-
-					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.word} entries from record. Please try again.`}); }
-
-					if (result.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `${opts.word} entries does not exists in the record or is not available.`}); }
-
-					if (result.rowCount >= 1) { let $result = result.rows;
-
-						let $r$b = {};
-
-						$r$b.Status = $result;
-
-						return $rpd.handler(res , 200 , $r$b); }	});
-
-		} ,
-
 		'entries' : (req , res , next) => {
 
 			let plan = query$.entries(req , res , {});

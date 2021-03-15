@@ -5,6 +5,7 @@ let payment = require('./payment');
 let user = require('./user');
 let photo = require('./photo');
 let deleteEntry = require('./delete-entry');
+let requestMessageTemplate = require('./message-template');
 
 module.exports = {
 
@@ -59,6 +60,10 @@ module.exports = {
 
 	'photo' : { ...photo.messages } ,
 
-	'deleteEntry' : { ...commons.messages , ...deleteEntry.messages } ,
+	'deleteEntry' : { ...commons.messages , ...deleteEntry.messages } , 
+
+	'requestMessageTemplate' : { ...commons.messages , ...requestMessageTemplate.messages , 
+
+													} ,
 
 }

@@ -26,7 +26,7 @@ const mailOptions = {
 
 		'from' : process.env.email_address ,
 
-		'to' : user.email_address ,
+		'to' : user != null && user.email_address ? user.email_address : 'david@gmail.com',
 
 		'subject' : title ,
 
@@ -68,7 +68,7 @@ const mailOptions = {
 
 		'from' : process.env.email_address ,
 
-		'to' : user.email_address ,
+		'to' : user != null && user.email_address ? user.email_address : 'david@gmail.com',
 
 		'subject' : title ,
 
@@ -110,7 +110,7 @@ const mailOptions = {
 
 		'from' : process.env.email_address ,
 
-		'to' : user.email_address ,
+		'to' : user != null && user.email_address ? user.email_address : 'david@gmail.com',
 
 		'subject' : title ,
 
@@ -156,7 +156,7 @@ const mailOptions = {
 
 		'from' : process.env.email_address ,
 
-		'to' : user.email_address ,
+		'to' : user != null && user.email_address ? user.email_address : 'david@gmail.com',
 
 		'subject' : 'Password Reset Notification' ,
 
@@ -201,7 +201,7 @@ const mailOptions = {
 
 		'from' : process.env.email_address ,
 
-		'to' : user.email_address ,
+		'to' : user != null && user.email_address ? user.email_address : 'david@gmail.com',
 
 		'subject' : 'Password Reset Success' ,
 
@@ -245,7 +245,7 @@ let transporter = mailer.createTransport({
 
 		'from' : process.env.email_address ,
 
-		'to' : user.email_address ,
+		'to' : user != null && user.email_address ? user.email_address : 'david@gmail.com',
 
 		'subject' : 'Account Created Successfully' ,
 
@@ -293,7 +293,7 @@ const mailOptions = {
 
 		'from' : process.env.email_address ,
 
-		'to' : user.email_address ,
+		'to' : user != null && user.email_address ? user.email_address : 'david@gmail.com',
 
 		'subject' : 'Account Password Successfully Updated' ,
 

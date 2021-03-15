@@ -100,9 +100,18 @@ module.exports = {
 
 	'userPhoto' : () => {
 
-		return QueryBuilderTableMap.photo() } ,
+		return QueryBuilderTableMap.photo(); } ,
 
 	'userSignature' : () => {
 
-		return QueryBuilderTableMap.photo() } ,
+		return QueryBuilderTableMap.photo(); } ,
+
+	'requestMessageTemplate' : () => {
+
+			let map$ = QueryBuilderTableMap.common();
+
+			map$.set('title' , 'title');
+			map$.set('body' , 'body');
+
+			return map$; } ,
 }

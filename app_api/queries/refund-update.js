@@ -12,8 +12,6 @@ module.exports = {
 
 		let b = req.body;
 
-		console.log(b);
-
 		let query = `SELECT rf.refund_id AS _id , rf.updated_on , rf.slug , rf.letter_id AS letter , grs.word AS status , grs1.word AS status1 , ${b.status} AS proposed_status ,
 
 									rf.refund_no AS num , rf.department_id AS department , rf.faculty_id AS faculty ,

@@ -100,7 +100,9 @@ module.exports = {
 
 		query += b.description ? `$$${b.description}$$ , ` : '';
 
-		query += ` $$${c}$$ , $$${s}$$ , $$${b.author}$$ ) `;
+		query += ` $$${c}$$ , $$${s}$$ , $$${b.author}$$ ) 
+
+		RETURNING slug`;
 
 		return query;
 

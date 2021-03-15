@@ -118,7 +118,9 @@ module.exports = {
 
 		query += b.faculty ? `$$${b.faculty}$$ , ` : '';
 
-		query += ` $$${c}$$ , $$${s}$$ , $$${b.author}$$ , (SELECT status_id AS _id FROM STATUS AS gs WHERE gs.word = 'Active' LIMIT 1) ) `;
+		query += ` $$${c}$$ , $$${s}$$ , $$${b.author}$$ , (SELECT status_id AS _id FROM STATUS AS gs WHERE gs.word = 'Active' LIMIT 1) ) 
+
+		RETURNING slug`;
 
 		return query;
 

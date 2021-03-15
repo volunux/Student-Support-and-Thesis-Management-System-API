@@ -4,7 +4,7 @@ let nuller = require('../utility/null-checker');
 
 let queryBuilder = require('../utility/query-builder');
 
-let sQuery = require('../search/general-two/payment-status');
+let sQuery = require('../search/general-one/request-message-template');
 
 module.exports = {
 
@@ -22,21 +22,21 @@ module.exports = {
 
 			if (q.status) { $sq = sQuery.status(req , res , {}); }
 
-			else if (q.name) { $sq = sQuery.name(req , res , {}); }
+			else if (q.title) { $sq = sQuery.title(req , res , {}); }
 
 		}
 
-		let query = `SELECT ps.name , ps.word , ps.updated_on , ps.payment_status_no AS num , ps.slug , gs.word AS status
+		let query = `SELECT rmt.title , rmt.updated_on , rmt.request_message_template_no AS num , rmt.slug , gs.word AS status
 
-									FROM PAYMENT_STATUS AS ps
+									FROM REQUEST_MESSAGE_TEMPLATE AS rmt
 
-									INNER JOIN STATUS AS gs ON gs.status_id = ps.status_id
+									INNER JOIN STATUS AS gs ON gs.status_id = rmt.status_id
 
 									${Object.values($sq.join).join(' ')}
 
 									${Object.values($sq.condition).join(' ')}
 
-									ORDER BY ps.updated_on DESC
+									ORDER BY rmt.updated_on DESC
 
 									LIMIT 11 OFFSET ${p}
 
@@ -47,9 +47,9 @@ module.exports = {
 
 	'entryExists' : (req , res , opts) => {
 
-		let query = `SELECT name , true AS exists 
+		let query = `SELECT title , true AS exists 
 
-									FROM PAYMENT_STATUS
+									FROM REQUEST_MESSAGE_TEMPLATE
 
 									WHERE slug = $1
 
@@ -92,27 +92,23 @@ module.exports = {
 
 		let s = (crypto({'length' : 29 , 'type' : 'alphanumeric'})).toLowerCase();
 
-		let query = `INSERT INTO PAYMENT_STATUS (`;
+		let query = `INSERT INTO REQUEST_MESSAGE_TEMPLATE (`;
 
-		query += b.name ? `name , ` : '';
+		query += b.title ? `title , ` : '';
 
-		query += b.word ? `word , ` : '';
+		query += b.body ? `body , ` : '';
 
-		query += b.description ? `description , ` : '';
-
-		query += `payment_status_no , slug , user_id , status_id ) `;
+		query += `request_message_template_no , slug , user_id , status_id ) `;
 
 		query += ` VALUES (`;
 
-		query += b.name ? `$$${b.name}$$ , ` : '';
+		query += b.title ? `$$${b.title}$$ , ` : '';
 
-		query += b.word ? `$$${b.word}$$ , ` : '';
-
-		query += b.description ? `$$${b.description}$$ , ` : '';
+		query += b.body ? `$$${b.body}$$ , ` : '';
 
 		query += ` $$${c}$$ , $$${s}$$ , $$${b.author}$$ , (SELECT status_id AS _id FROM STATUS AS gs WHERE gs.word = 'Active' LIMIT 1) ) 
 
-		RETURNING slug`;
+		RETURNING title , slug `;
 
 		return query;
 
@@ -120,13 +116,13 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT ps.payment_status_id AS _id , ps.name , ps.word , ps.updated_on , ps.description , gs.word AS status
+		let query = `SELECT rmt.request_message_template_id AS _id , rmt.title , rmt.body , rmt.updated_on , gs.word AS status
 
-									FROM PAYMENT_STATUS AS ps
+									FROM REQUEST_MESSAGE_TEMPLATE AS rmt
 
-									LEFT JOIN STATUS AS gs ON gs.status_id = ps.status_id
+									LEFT JOIN STATUS AS gs ON gs.status_id = rmt.status_id
 
-									WHERE ps.slug = $1
+									WHERE rmt.slug = $1
 
 									LIMIT 1
 
@@ -150,11 +146,11 @@ module.exports = {
 
 											'Entry' , (SELECT row_to_json(et) 
 
-																		FROM (SELECT ps.name , ps.word , ps.description , ps.slug , ps.status_id AS status
+																		FROM (SELECT rmt.title , rmt.body , rmt.slug , rmt.status_id AS status
 
-																			FROM PAYMENT_STATUS AS ps
+																			FROM REQUEST_MESSAGE_TEMPLATE AS rmt
 
-																			WHERE ps.slug = $1
+																			WHERE rmt.slug = $1
 
 																			LIMIT 1) AS et)
 
@@ -170,15 +166,15 @@ module.exports = {
 
 		let b = req.body;
 
-		let builder$ = queryBuilder.update$(b , 'general2');
+		let builder$ = queryBuilder.update$(b , 'requestMessageTemplate');
 
-		let query = `UPDATE PAYMENT_STATUS
+		let query = `UPDATE REQUEST_MESSAGE_TEMPLATE
 
 									SET ${builder$}
 
 									WHERE slug = $1 
 
-									RETURNING name , word , slug
+									RETURNING title , slug
 
 								`;
 
@@ -188,13 +184,13 @@ module.exports = {
 
 	'entryDelete' : (req , res , opts) => {
 
-		let query = `SELECT ps.slug , ps.name , ps.word , gs.word AS status
+		let query = `SELECT rmt.slug , rmt.title , gs.word AS status
 
-									FROM PAYMENT_STATUS AS ps
+									FROM REQUEST_MESSAGE_TEMPLATE AS rmt
 
-									LEFT JOIN STATUS AS gs ON gs.status_id = ps.status_id
+									LEFT JOIN STATUS AS gs ON gs.status_id = rmt.status_id
 
-									WHERE ps.slug = $1
+									WHERE rmt.slug = $1
 
 									LIMIT 1
 
@@ -208,11 +204,11 @@ module.exports = {
 
 		let query = `DELETE
 
-									FROM PAYMENT_STATUS
+									FROM REQUEST_MESSAGE_TEMPLATE
 
 									WHERE slug = $1 
 
-									RETURNING name , word , slug
+									RETURNING title , slug
 
 								`;
 
@@ -230,11 +226,11 @@ module.exports = {
 
 		let query = `DELETE
 
-									FROM PAYMENT_STATUS
+									FROM REQUEST_MESSAGE_TEMPLATE
 
-									WHERE payment_status_no IN (${et})
+									WHERE request_message_template_no IN (${et})
 
-									RETURNING name , word , slug
+									RETURNING title , slug
 
 								`;
 
@@ -246,7 +242,7 @@ module.exports = {
 
 		let query = `SELECT slug
 
-									FROM PAYMENT_STATUS
+									FROM REQUEST_MESSAGE_TEMPLATE
 
 									WHERE slug IS NOT NULL
 
@@ -262,9 +258,9 @@ module.exports = {
 
 		let query = `DELETE
 
-									FROM PAYMENT_STATUS
+									FROM REQUEST_MESSAGE_TEMPLATE
 
-									RETURNING name , word , slug`;
+									RETURNING title , slug`;
 
 		return query;
 

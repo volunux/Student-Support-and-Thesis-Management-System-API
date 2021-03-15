@@ -25,6 +25,7 @@ let userProfileUpdate = require('./schema/user/profile-update');
 let userPhoto = require('./schema/user/photo');
 let userPassword = require('./schema/user/password');
 let deleteEntry = require('./schema/delete-entry');
+let requestMessageTemplate = require('./schema/request-message-template');
 
 
 
@@ -297,6 +298,18 @@ module.exports = (opts) => {
 		let $err = deleteEntry.validator.validate(req.body , joiOptions);
 
 		let msgList = valiationMsgBuilder.build(req , res , $err , 'deleteEntry');
+
+		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to process ${opts.second} entry. Please try again.` , 'details' : msgList}); }
+
+		else { return next(); }
+
+	} ,
+
+	'requestMessageTemplate$' : (req , res , next) => {
+
+		let $err = requestMessageTemplate.validator.validate(req.body , joiOptions);
+
+		let msgList = valiationMsgBuilder.build(req , res , $err , 'requestMessageTemplate');
 
 		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to process ${opts.second} entry. Please try again.` , 'details' : msgList}); }
 

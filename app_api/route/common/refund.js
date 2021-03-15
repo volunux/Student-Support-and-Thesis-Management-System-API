@@ -40,6 +40,8 @@ let gctrl = require('../../controller/general-one')(opts);
 
 let ectrl = require('../../controller/refund')(opts);
 
+let others = require('../../controller/others')(opts);
+
 let ectrl$u = require('../../controller/refund-update')(opts);
 
 let ectrl$l = require('../../controller/refund-letter')(opts);
@@ -50,8 +52,17 @@ let validator = require('../../validators/register')(opts);
 
 router.route('/status')
 
-			.get(ectrl.manageStatus);
+			.get(others.manageStatus);
 
+
+router.route('/message-template')
+
+			.get(others.manageMessageTemplate);
+
+
+router.route('/message-template/entry/:entry/detail')
+
+			.get(others.messageTemplateEntryDetail);
 
 
 router
