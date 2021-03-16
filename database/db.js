@@ -2,27 +2,27 @@ const { Pool } = require('pg');
 
 const COUNTRY = require('../tables/request_message_template');
 
-// const pool = new Pool({
-
-// 'connectionString' : process.env.DATABASE_URL ,
-
-// 'ssl': {
-//     'rejectUnauthorized': false
-//   }
-
-// });
-
 const pool = new Pool({
 
-'user' : 'postgres' ,
+'connectionString' : process.env.DATABASE_URL ,
 
-'host' : '127.0.0.1',
+'ssl': {
+    'rejectUnauthorized': false
+  }
 
-'database' : 'store',
+});
 
-'password' : '12345',
+// const pool = new Pool({
 
-'port' : '5432'});
+// 'user' : 'postgres' ,
+
+// 'host' : '127.0.0.1',
+
+// 'database' : 'store',
+
+// 'password' : '12345',
+
+// 'port' : '5432'});
 
 // pool.query(COUNTRY.CREATE_TABLE , (err, res) => {
 
