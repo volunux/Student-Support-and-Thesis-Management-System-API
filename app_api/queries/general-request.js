@@ -35,6 +35,8 @@ module.exports = {
 
 									WHERE rt.slug = $1
 
+									LIMIT 1
+
 									`;
 
 		return query;
@@ -49,6 +51,8 @@ module.exports = {
 								INNER JOIN REQUEST_TYPE AS rt ON rt.slug = $2 AND rt.request_type_id = gr.request_type_id
 
 								WHERE gr.slug = $1
+
+								LIMIT 1
 
 								`;
 
@@ -116,6 +120,8 @@ module.exports = {
 									INNER JOIN UNIT AS ut ON ut.unit_id = rt.unit_id
 
 									WHERE rt.slug = $1
+
+									LIMIT 1
 								
 								`;
 
@@ -236,6 +242,8 @@ module.exports = {
 
 									WHERE gr.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -263,6 +271,8 @@ module.exports = {
 									INNER JOIN REQUEST_TYPE AS rt ON rt.slug = $2 AND rt.request_type_id = gr.request_type_id
 
 									WHERE gr.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -341,6 +351,8 @@ module.exports = {
 									INNER JOIN REQUEST_TYPE AS rt ON rt.slug = $2 AND rt.request_type_id = gr.request_type_id
 
 									WHERE gr.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -421,6 +433,8 @@ module.exports = {
 									INNER JOIN REQUEST_TYPE AS rt ON rt.slug = $2 AND rt.request_type_id = gr.request_type_id
 
 									WHERE gr.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -510,7 +524,9 @@ module.exports = {
 
 													INNER JOIN REQUEST_TYPE AS rt ON rt.slug = $2 AND rt.request_type_id = gr.request_type_id
 
-													WHERE gr.slug = $1) as gr)
+													WHERE gr.slug = $1
+
+													LIMIT 1) as gr)
 
 									) AS result
 
@@ -533,6 +549,8 @@ module.exports = {
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.general_request_status_id = gr.status_id
 
 									WHERE gr.slug = $1
+
+									LIMIT 1
 
 									`;
 
@@ -582,6 +600,8 @@ module.exports = {
 
 										WHERE gr.slug = $1
 
+										LIMIT 1
+
 								`;
 
 		return query;
@@ -628,6 +648,8 @@ module.exports = {
 
 									WHERE gr.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -658,6 +680,8 @@ module.exports = {
 
 									WHERE grc.slug = $3 AND grc.entry_id = gr.general_request_id
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -679,6 +703,8 @@ module.exports = {
 									INNER JOIN GENERAL_REQUEST AS gr ON gr.slug = $1
 
 									WHERE grc.slug = $3 AND grc.entry_id = gr.general_request_id
+
+									LIMIT 1
 
 								`;
 
@@ -704,6 +730,8 @@ module.exports = {
 
 									WHERE gr.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -718,7 +746,11 @@ module.exports = {
 
 									INNER JOIN REQUEST_TYPE AS rt ON rt.slug = $2 AND rt.request_type_id = gr.request_type_id
 
-									WHERE gr.slug = $1`;
+									WHERE gr.slug = $1
+
+									LIMIT 1
+
+									`;
 
 		return query;
 

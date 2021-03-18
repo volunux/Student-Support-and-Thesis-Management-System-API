@@ -10,6 +10,8 @@ module.exports = {
 
 									WHERE u.email_address = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -42,6 +44,8 @@ module.exports = {
 
 									WHERE u.reset_password_token = $1 AND u.reset_password_expires > ${Date.now()}
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -55,6 +59,8 @@ module.exports = {
 									FROM USERS AS u
 
 									WHERE u.reset_password_token = $1 AND u.reset_password_expires > ${Date.now()}
+
+									LIMIT 1
 
 								`;
 

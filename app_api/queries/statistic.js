@@ -34,103 +34,103 @@ module.exports = {
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'viceChancellor') AS vc ) ,
+																				WHERE rl.name = 'viceChancellor' LIMIT 1) AS vc ) ,
 
 										'Chancellor' , (SELECT row_to_json(c) FROM (SELECT COUNT(*) AS total , 'Chancellor' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'hancellor') AS c ) ,
+																				WHERE rl.name = 'hancellor' LIMIT 1) AS c ) ,
 
 										'Registrar' , (SELECT row_to_json(rg) FROM (SELECT COUNT(*) AS total , 'Registrar' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'registrar') AS rg ) ,
+																				WHERE rl.name = 'registrar' LIMIT 1) AS rg ) ,
 
 										'Bursar' , (SELECT row_to_json(bur) FROM (SELECT COUNT(*) AS total , 'Bursar' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'bursar') AS bur ) ,
+																				WHERE rl.name = 'bursar' LIMIT 1) AS bur ) ,
 
 										'Librarian' , (SELECT row_to_json(lib) FROM (SELECT COUNT(*) AS total , 'Librarian' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'librarian') AS lib ) ,
+																				WHERE rl.name = 'librarian' LIMIT 1) AS lib ) ,
 
 										'Staff' , (SELECT row_to_json(stf) FROM (SELECT COUNT(*) AS total , 'Staff' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'staff') AS stf ) ,
+																				WHERE rl.name = 'staff' LIMIT 1) AS stf ) ,
 
 										'Dean' , (SELECT row_to_json(dn) FROM (SELECT COUNT(*) AS total , 'Dean of Faculty' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'dean') AS dn ) ,
+																				WHERE rl.name = 'dean' LIMIT 1) AS dn ) ,
 
 										'HeadOfDepartment' , (SELECT row_to_json(hod) FROM (SELECT COUNT(*) AS total , 'Head of Department' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'hod') AS hod ) ,
+																				WHERE rl.name = 'hod' LIMIT 1) AS hod ) ,
 
 										'Lecturer' , (SELECT row_to_json(lc) FROM (SELECT COUNT(*) AS total , 'Lecturer' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'lecturer') AS lc ) ,
+																				WHERE rl.name = 'lecturer' LIMIT 1) AS lc ) ,
 
 										'LevelAdviser' , (SELECT row_to_json(la) FROM (SELECT COUNT(*) AS total , 'Level Adviser' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'levelAdviser') AS la ) ,
+																				WHERE rl.name = 'levelAdviser' LIMIT 1) AS la ) ,
 
 										'Secretary' , (SELECT row_to_json(sec) FROM (SELECT COUNT(*) AS total , 'Secretary' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'secretary') AS sec ) ,
+																				WHERE rl.name = 'secretary' LIMIT 1) AS sec ) ,
 
 										'FacultyPresident' , (SELECT row_to_json(sfp) FROM (SELECT COUNT(*) AS total , 'Faculty President' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'facultyPresident') AS sfp ) ,
+																				WHERE rl.name = 'facultyPresident' LIMIT 1) AS sfp ) ,
 
 										'departmentPresident' , (SELECT row_to_json(sdp) FROM (SELECT COUNT(*) AS total , 'Department President' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'departmentPresident') AS sdp ) ,
+																				WHERE rl.name = 'departmentPresident' LIMIT 1) AS sdp ) ,
 
 										'Student' , (SELECT row_to_json(stu) FROM (SELECT COUNT(*) AS total , 'Student' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'student') AS stu ) ,
+																				WHERE rl.name = 'student' LIMIT 1) AS stu ) ,
 
 										'Moderator' , (SELECT row_to_json(mod) FROM (SELECT COUNT(*) AS total , 'Moderator' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'moderator') AS mod ) ,
+																				WHERE rl.name = 'moderator' LIMIT 1) AS mod ) ,
 
 										'Administrator' , (SELECT row_to_json(adm) FROM (SELECT COUNT(*) AS total , 'Administrator' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'administrator') AS adm ) ,
+																				WHERE rl.name = 'administrator' LIMIT 1) AS adm ) ,
 
 										'SuperAdministrator' , (SELECT row_to_json(sadm) FROM (SELECT COUNT(*) AS total , 'Super Administrator' AS name FROM USERS AS u 
 
 																				INNER JOIN ROLE AS rl ON rl.role_id = u.role_id 
 
-																				WHERE rl.name = 'superAdministrator') AS sadm )
+																				WHERE rl.name = 'superAdministrator' LIMIT 1) AS sadm )
 
 									) AS result`;
 

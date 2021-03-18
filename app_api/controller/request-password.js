@@ -5,7 +5,7 @@ module.exports = (opts) => {
 
 		let $rpd = require('../helper/responder');
 
-		let query$ = require('../queries/request-credential');
+		let query$ = require('../queries/request-password');
 
 		let mailMessage = require(`../mail/messages/internet-password`);
 
@@ -15,7 +15,9 @@ module.exports = (opts) => {
 
 		'createPassword' : (req , res , next) => {
 
-			let plan = query$.entryAddCred$s(req , res , {});
+			let b = req.body;
+
+			let plan = query$.entryAddCred$s(req , res , {'cred' : {'password' : b.password } });
 
 			db.query(plan , [] , (err , result) => {
 

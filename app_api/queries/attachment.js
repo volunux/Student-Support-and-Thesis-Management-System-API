@@ -6,6 +6,8 @@ class AttachmentRepository {
 
 		let b = req.body;
 
+		let p = +(q.page) > 0 ? (+(q.page) - 1) * 10 : 0;
+
 		let query = `SELECT atth.attachment_id AS _id , atth.attachment_no AS num , atth.entry_id , atth.updated_on , s.word AS status ,
 
 									(SELECT row_to_json(u)
@@ -22,7 +24,9 @@ class AttachmentRepository {
 
 									ORDER BY atth.updated_on DESC
 
-									LIMIT ${opts.$l}`;
+									LIMIT 11 OFFSET ${p}
+
+									`;
 
 		return query;
 

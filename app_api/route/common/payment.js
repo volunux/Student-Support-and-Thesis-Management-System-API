@@ -139,11 +139,21 @@ router
 
 				$p$g.verifyTransaction);
 
-router
+/*router
 
 			.route('/refund-transaction')
 
 			.post(
+
+				cUser.roleType(['superAdministrator']) ,
+
+				$p$g.refundTransaction);*/
+
+router
+
+			.route('/entry/:entry/refund-transaction')
+
+			.put(
 
 				cUser.roleType(['departmentPresident' , 'facultyPresident']) ,
 

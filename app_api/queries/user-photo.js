@@ -6,15 +6,27 @@ class UserPhotoRepository {
 
 		let b = req.body;
 
-		let query = `SELECT at.attachment_id AS _id , at.attachment_no AS num , at.entry_id , at.updated_on , s.word AS status
+		let p = +(q.page) > 0 ? (+(q.page) - 1) * 10 : 0;
 
-									FROM ATTACHMENT AS at
+		let query = `SELECT upho.user_photo_id AS _id , upho.user_photo_no AS num , upho.updated_on , s.word AS status ,
 
-									INNER JOIN STATUS AS s ON s.status_id = at.status_id
+									(SELECT row_to_json(u)
 
-									ORDER BY at.updated_on DESC
+										FROM (SELECT u.user_id AS _id , u.first_name || ' ' || u.last_name AS full_name 
 
-									LIMIT ${opts.$l}`;
+											FROM USERS AS u 
+
+											WHERE u.user_id = upho.user_id) AS u ) AS author
+
+									FROM USER_PHOTO AS upho
+
+									INNER JOIN STATUS AS s ON s.status_id = upho.status_id
+
+									ORDER BY upho.updated_on DESC
+
+									LIMIT 11 OFFSET ${p}
+
+									`;
 
 		return query;
 
@@ -24,25 +36,35 @@ class UserPhotoRepository {
 
 		let b = req.body;
 
-    let attachment$ = [];
-
-		let query = `INSERT INTO ATTACHMENT (key , location , size , mimetype , attachment_no , slug , user_id , status_id)`;
-
 		let c = +(crypto({'length' : 9 , 'type' : 'numeric'}));
 
 		let s = (crypto({'length' : 29 , 'type' : 'alphanumeric'})).toLowerCase();
 
-			if (attachment$.length < 1) query += ` VALUES `;
+		let query = `INSERT INTO USER_PHOTO (`;
 
-			attachment$.push(` ($$${b.key}$$ , $$${b.location}$$ , $$${b.size}$$ , $$${b.mimetype}$$ , $$${c}$$ , $$${s}$$ , $$${b.author}$$ ,
+		query += b.key ? `key , ` : '';
 
-													(SELECT status_id AS _id FROM STATUS AS s WHERE s.word = 'Active' LIMIT 1)) `);
-	
-		let $att = attachment$.join(' ');
+		query += b.location ? `location , ` : '';
 
-		query += $att;
+		query += b.size ? `size , ` : '';
 
-		query += ` RETURNING location , size , key`;
+		query += b.mimetype ? `mimetype , ` : '';
+
+		query += `user_photo_no , slug , user_id , status_id ) `;
+
+		query += ` VALUES (`;
+
+		query += b.key ? `$$${b.key}$$ , ` : '';
+
+		query += b.location ? `$$${b.location}$$ , ` : '';
+
+		query += b.size ? `$$${b.size}$$ , ` : '';
+
+		query += b.mimetype ? `$$${b.mimetype}$$ , ` : '';
+
+		query += ` $$${c}$$ , $$${s}$$ , $$${b.author}$$ , (SELECT status_id AS _id FROM STATUS AS gs WHERE gs.word = 'Active' LIMIT 1) ) 
+
+		RETURNING location , key , size`;
 
 			return query;
 
@@ -52,11 +74,11 @@ class UserPhotoRepository {
 
 		let query = `DELETE
 
-									FROM ATTACHMENT AS atth
+									FROM USER_PHOTO AS upho
 
-									WHERE atth.key = $1
+									WHERE upho.key = $1
 
-									RETURNING atth.key`;
+									RETURNING upho.key`;
 
 		return query;
 
@@ -72,9 +94,9 @@ class UserPhotoRepository {
 
 		let query = `DELETE
 
-									FROM ATTACHMENT AS at
+									FROM USER_PHOTO AS upho
 
-									WHERE attachment_no IN (${et})
+									WHERE user_photo_no IN (${et})
 
 									RETURNING key`;
 
@@ -84,11 +106,11 @@ class UserPhotoRepository {
 
 	entryDeleteAll(req , res , opts) {
 
-		let query = `SELECT at.slug
+		let query = `SELECT upho.slug
 
-									FROM ATTACHMENT AS at
+									FROM USER_PHOTO AS upho
 
-									WHERE at.slug
+									WHERE upho.slug
 
 									LIMIT 1
 
@@ -100,7 +122,7 @@ class UserPhotoRepository {
 
 	entryDeleteAll$(req , res , opts) {
 
-		let query = `DELETE FROM ATTACHMENT
+		let query = `DELETE FROM USER_PHOTO
 								
 								`;
 

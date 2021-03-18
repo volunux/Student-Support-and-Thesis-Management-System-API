@@ -12,6 +12,8 @@ module.exports = {
 
 									WHERE u.user_id = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -48,6 +50,8 @@ module.exports = {
 
 									WHERE u.user_id = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -64,6 +68,8 @@ module.exports = {
 
 									WHERE u.user_id = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -79,6 +85,8 @@ module.exports = {
 									INNER JOIN USER_STATUS AS us ON us.user_status_id = u.status_id
 
 									WHERE u.user_id = $1
+
+									LIMIT 1
 
 								`;
 
@@ -114,6 +122,8 @@ module.exports = {
 
 									WHERE u.user_id = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -129,6 +139,8 @@ module.exports = {
 									INNER JOIN USER_STATUS AS us ON us.user_status_id = u.status_id
 
 									WHERE u.user_id = $1
+
+									LIMIT 1
 
 								`;
 
@@ -161,6 +173,8 @@ module.exports = {
 									FROM USERS AS u
 
 									WHERE u.user_id = $1
+
+									LIMIT 1
 
 								`;
 
@@ -210,7 +224,9 @@ module.exports = {
 
 																			FROM USERS AS u
 
-																			WHERE u.user_id = $1) AS u)
+																			WHERE u.user_id = $1
+
+																			LIMIT 1) AS u)
 
 											) AS result
 

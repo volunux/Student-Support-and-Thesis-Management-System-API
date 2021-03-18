@@ -18,6 +18,8 @@ module.exports = {
 
 								WHERE rf.slug = $1
 
+								LIMIT 1
+
 								`;
 
 		return query;
@@ -201,6 +203,8 @@ module.exports = {
 
 									WHERE rf.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -226,6 +230,8 @@ module.exports = {
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.general_request_status_id = rf.status_id
 
 									WHERE rf.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -282,6 +288,8 @@ module.exports = {
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.general_request_status_id = rf.status_id
 
 									WHERE rf.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -447,6 +455,8 @@ module.exports = {
 
 									WHERE rf.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -459,7 +469,7 @@ module.exports = {
 
 									grs.word AS status ,
 
-									(SELECT json_build_object('_id' , (SELECT user_id FROM USERS WHERE user_id = rf.user_id) ) ) AS author
+									(SELECT json_build_object('_id' , (SELECT user_id FROM USERS WHERE user_id = rf.user_id LIMIT 1) ) ) AS author
 
 									FROM REFUND AS rf
 
@@ -477,7 +487,7 @@ module.exports = {
 
 		let query = `	SELECT rf.refund_id AS _id , rf.slug , rf.status_id AS status_id , grs.word AS status , rf.department_id AS department , rf.faculty_id AS faculty ,
 
-									(SELECT json_build_object('_id' , (SELECT user_id FROM USERS WHERE user_id = rf.user_id) ) ) AS author
+									(SELECT json_build_object('_id' , (SELECT user_id FROM USERS WHERE user_id = rf.user_id LIMIT 1) ) ) AS author
 
 									FROM REFUND AS rf
 
@@ -503,7 +513,7 @@ module.exports = {
 
 											FROM USERS AS u 
 
-											WHERE u.user_id = rfc.user_id) AS u ) AS author
+											WHERE u.user_id = rfc.user_id LIMIT 1) AS u ) AS author
 
 									FROM REFUND_COMMENT AS rfc
 
@@ -533,6 +543,8 @@ module.exports = {
 
 									WHERE rfc.slug = $2 AND rfc.entry_id = rf.refund_id
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -551,6 +563,8 @@ module.exports = {
 
 									WHERE rf.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -563,7 +577,11 @@ module.exports = {
 
 									FROM REFUND AS rf 
 
-									WHERE rf.slug = $1`;
+									WHERE rf.slug = $1
+
+									LIMIT 1
+
+									`;
 
 		return query;
 
@@ -577,7 +595,9 @@ module.exports = {
 
 									WHERE rf.slug = $1
 
-									RETURNING rf.message , rf.slug`;
+									RETURNING rf.message , rf.slug
+
+									`;
 
 		return query;
 
@@ -597,7 +617,9 @@ module.exports = {
 
 									WHERE refund_no IN (${et})
 
-									RETURNING rf.slug`;
+									RETURNING rf.slug
+
+									`;
 
 		return query;
 

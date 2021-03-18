@@ -16,6 +16,8 @@ module.exports = {
 
 									WHERE u.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -168,6 +170,8 @@ module.exports = {
 
 									WHERE u.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -184,6 +188,8 @@ module.exports = {
 
 									WHERE u.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -199,6 +205,8 @@ module.exports = {
 									INNER JOIN USER_STATUS AS us ON us.user_status_id = u.status_id
 
 									WHERE u.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -234,6 +242,8 @@ module.exports = {
 
 									WHERE u.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -249,6 +259,8 @@ module.exports = {
 									INNER JOIN USER_STATUS AS us ON us.user_status_id = u.status_id
 
 									WHERE u.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -289,6 +301,8 @@ module.exports = {
 									INNER JOIN USER_STATUS AS us ON us.user_status_id = u.status_id
 
 									WHERE u.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -353,6 +367,8 @@ module.exports = {
 									INNER JOIN ROLE AS rl ON rl.role_id = u.role_id
 
 									WHERE u.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -504,6 +520,8 @@ module.exports = {
 
 									WHERE u.email_address = $$${b.email_address}$$
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -519,6 +537,8 @@ module.exports = {
 									FROM USERS AS u
 
 									WHERE u.username = $$${b.username}$$
+
+									LIMIT 1
 
 								`;
 

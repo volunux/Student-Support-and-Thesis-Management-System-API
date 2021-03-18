@@ -59,6 +59,8 @@ module.exports = {
 
 								WHERE slug = $1
 
+								LIMIT 1
+
 								`;
 
 		return query;
@@ -75,6 +77,8 @@ module.exports = {
 
 								WHERE entry_id = $$${b.entry}$$
 
+								LIMIT 1
+
 								`;
 
 		return query;
@@ -88,6 +92,8 @@ module.exports = {
 								FROM REQUEST_CREDENTIAL
 
 								WHERE username = $1
+
+								LIMIT 1
 
 								`;
 
@@ -137,7 +143,9 @@ module.exports = {
 
 									WHERE credential_no IN (${et})
 
-									RETURNING username , password , slug`;
+									RETURNING username , password , slug
+
+									`;
 
 		return query;
 
@@ -151,7 +159,9 @@ module.exports = {
 
 									WHERE slug IS NOT NULL
 
-									LIMIT 1`;
+									LIMIT 1
+
+									`;
 
 		return query;
 
@@ -163,7 +173,9 @@ module.exports = {
 
 									FROM REQUEST_CREDENTIAL
 
-									RETURNING username , password , slug`;
+									RETURNING username , password , slug
+
+									`;
 
 		return query;
 

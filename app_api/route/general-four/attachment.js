@@ -4,6 +4,10 @@ let router = express.Router();
 
 let cUser = require('../../helper/confirm-user');
 
+let AtthRepo = require(`../../queries/attachment`).AttachmentRepository;
+
+let query$ = new AtthRepo();
+
 let opts = {
 
 	'first' : 'Attachment' ,
@@ -20,6 +24,8 @@ let opts = {
 
 	'word' : 'Attachment' ,
 
+	'query$' : query$ ,
+
 	'normalPrivilege' : ['student' , 'departmentPresident' , 'facultyPresident'] ,
 
 	'superPrivilege' : ['moderator' , 'administrator' , 'superAdministrator'] ,
@@ -30,9 +36,7 @@ let opts = {
 
 };
 
-let gctrl = require('../../controller/general-one')(opts);
-
-let ectrl = require('../../controller/attachment')(opts);
+let ectrl = require('../../controller/upload')(opts);
 
 	
 router.route('/entry/create')

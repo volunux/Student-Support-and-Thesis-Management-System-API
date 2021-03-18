@@ -59,6 +59,8 @@ module.exports = {
 
 								WHERE slug = $1
 
+								LIMIT 1
+
 								`;
 
 		return query;
@@ -75,19 +77,7 @@ module.exports = {
 
 								WHERE entry_id = $$${b.entry}$$
 
-								`;
-
-		return query;
-
-	} ,
-
-	'entryAddCred$' : (req , res , opts) => {
-
-		let query = `SELECT slug , true AS exists
-
-								FROM REQUEST_PASSWORD
-
-								WHERE username = $1
+								LIMIT 1
 
 								`;
 
@@ -137,7 +127,9 @@ module.exports = {
 
 									WHERE password_no IN (${et})
 
-									RETURNING password , slug`;
+									RETURNING password , slug
+
+									`;
 
 		return query;
 
@@ -151,7 +143,9 @@ module.exports = {
 
 									WHERE slug IS NOT NULL
 
-									LIMIT 1`;
+									LIMIT 1
+
+									`;
 
 		return query;
 
@@ -163,7 +157,9 @@ module.exports = {
 
 									FROM REQUEST_PASSWORD
 
-									RETURNING password , slug`;
+									RETURNING password , slug
+
+									`;
 
 		return query;
 

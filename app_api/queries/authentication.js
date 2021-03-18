@@ -10,6 +10,8 @@ module.exports = {
 
 									WHERE u.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -150,6 +152,8 @@ module.exports = {
 
 									WHERE u.email_address = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -165,6 +169,8 @@ module.exports = {
 									FROM USERS AS u
 
 									WHERE u.username = $1
+
+									LIMIT 1
 
 								`;
 
@@ -185,6 +191,8 @@ module.exports = {
 									INNER JOIN USER_STATUS AS us ON us.user_status_id = u.status_id
 
 									WHERE u.email_address = $1
+
+									LIMIT 1
 
 								`;
 

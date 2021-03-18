@@ -121,7 +121,7 @@ module.exports = (opts) => {
 
 		'signIn$' : (req , res , next) => {
 
-				passport.authenticate('local' , (err , user , info) => {
+				return passport.authenticate('local' , (err , user , info) => {
 					
 					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.word} entry. Please try again.`}); }
 

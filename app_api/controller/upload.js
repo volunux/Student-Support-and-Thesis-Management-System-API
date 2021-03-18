@@ -4,9 +4,7 @@ module.exports = (opts) => {
 
 	let $rpd = require('../helper/responder');
 
-	let AtthRepo = require(`../queries/attachment`).AttachmentRepository;
-
-	let query$ = new AtthRepo();
+	let query$ = opts.query$;
 
 	let $object = require('../helper/object');
 
@@ -14,9 +12,7 @@ module.exports = (opts) => {
 
 		'entries' : (req , res , next) => {
 
-			let $l = 11;
-
-			let plan = query$.entries(req , res , {'$l' : $l});
+			let plan = query$.entries(req , res , {});
 
 			db.query(plan , [] , (err , result) => {
 
@@ -40,7 +36,9 @@ module.exports = (opts) => {
 
 					if (result.rowCount >= 1) { let $result = result.rows[0];
 
-						return $rpd.handler(res , 200 , $result); }	});	} ,
+						return $rpd.handler(res , 200 , $result); }	});	
+
+		} ,
 
 		'entryDeleteMany$' : (req , res , next) => {
 

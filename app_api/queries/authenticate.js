@@ -8,6 +8,8 @@ class AuthenticateRepository {
 
 								WHERE u.user_id = $1
 
+								LIMIT 1
+
 								`;
 
 		return query;
@@ -22,6 +24,8 @@ class AuthenticateRepository {
 
 									WHERE u.email_address = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -35,6 +39,8 @@ class AuthenticateRepository {
 									FROM USERS AS u
 
 									WHERE u.username = $1
+
+									LIMIT 1
 
 								`;
 

@@ -1,14 +1,16 @@
 const { Pool } = require('pg');
 
+const $rpd = require('../app_api/helper/responder');
+
 const COUNTRY = require('../tables/request_message_template');
 
 const pool = new Pool({
 
-'connectionString' : process.env.DATABASE_URL ,
+'connectionString' : process.env.DATABASE_URL,
 
 'ssl': {
     'rejectUnauthorized': false
-  }
+  } 
 
 });
 
@@ -33,6 +35,18 @@ const pool = new Pool({
 // pool.end();
 // });
 
+pool.connect()
+
+.then((connected) => {
+
+  console.log('Connected');
+})
+
+.catch((err) => {
+
+  console.log(err);
+
+});
 
 module.exports = {
 
@@ -50,7 +64,7 @@ module.exports = {
 
       // console.log('executed query', { text , duration , rows : res.rowCount })
       
-      callback(err , res)
+      callback(err , res);
     
     })
   

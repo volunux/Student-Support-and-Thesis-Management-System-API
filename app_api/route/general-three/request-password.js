@@ -6,19 +6,19 @@ let cUser = require('../../helper/confirm-user');
 
 let opts = {
 
-	'first' : 'RequestCredential' ,
+	'first' : 'RequestPassword' ,
 
-	'second' : 'Request Credential' ,
+	'second' : 'Request Password' ,
 
-	'third' : 'request-credential' ,
+	'third' : 'request-password' ,
 
-	'fourth' : 'requestCredential' ,
+	'fourth' : 'requestPassword' ,
 
-	'fifth' : 'RequestCredential' ,
+	'fifth' : 'RequestPassword' ,
 
-	'query' : 'request-credential' ,
+	'query' : 'request-password' ,
 
-	'word' : 'Request Credential' ,
+	'word' : 'Request Password' ,
 
 	'normalPrivilege' : ['student' , 'departmentPresident' , 'facultyPresident'] ,
 
@@ -30,7 +30,7 @@ let opts = {
 
 let gctrl = require('../../controller/general-one')(opts);
 
-let ectrl = require('../../controller/request-credential')(opts);
+let ectrl = require('../../controller/request-password')(opts);
 
 
 router
@@ -56,8 +56,7 @@ router.route('/entry/create')
 
 			.post(
 
-				ectrl.createCredential);
-
+				ectrl.createPassword);
 
 
 router.route('/delete/entry/many')

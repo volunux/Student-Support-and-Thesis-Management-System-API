@@ -4,6 +4,8 @@ module.exports = (opts) => {
 
 	let db = require('../../database/db');
 
+	let cUser = require('../helper/confirm-user');
+
 	let query$ = require(`../queries/${opts.query}`);
 
 	let axios = require('axios');
@@ -34,9 +36,9 @@ module.exports = (opts) => {
 
 			db.query(plan , [$p , $s] , (err , result) => {
 
-					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.pt} entries from record. Please try again.`}); }
+					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.pt} entry from record. Please try again.`}); }
 
-					if (result.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `${opts.pt} entries does not exists in the record or is not available.`}); }
+					if (result.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `${opts.pt} entry does not exists in the record or is not available.`}); }
 
 					if (result.rowCount >= 1) {
 
@@ -126,7 +128,7 @@ module.exports = (opts) => {
 
 							return $rpd.handler(res , 200 , $result1); } }); }
 
-				else {
+				else if ($result.status == 'failed') {
 
 			let plan = query$.entryUpdateStatusFailed$(req , res , {});
 
@@ -142,7 +144,9 @@ module.exports = (opts) => {
 
 								mailer.entryRejected(req , res , next , {'email_address' : $result1.email_address} , $entry.title , $entry.message);
 
-							return $rpd.handler(res , 200 , $result1); } }); } })
+							return $rpd.handler(res , 200 , $result1); } }); }
+
+			else { return $rpd.handler(res , 400 , {'message' : `Request is forbidden and invalid.`}); } })
 				
 				.catch((err) => { let $err = null;
 
@@ -162,6 +166,30 @@ module.exports = (opts) => {
 
 	 'refundTransaction' : (req , res , next) => { let url = 'https://api.paystack.co/refund';
 
+ 			let toHappen = {'run' : true};
+
+	 		let $e = req.params.entry;
+
+	 		let b = req.body;
+
+			let plan = query$.entryRefundCheck(req , res , {});
+
+			db.query(plan , [$e] , (err , result) => {
+
+					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.pt} entry from record. Please try again.`}); }
+
+					if (result.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `${opts.pt} entry does not exists in the record or is not available.`}); }
+
+					if (result.rowCount >= 1) { let $result = result.rows[0];
+	
+						cUser.$canRefundPayment(req , res , next , $result , toHappen , opts.normalPrivilege , opts.superPrivilege , opts.leastPrivilege , cUser.successReponse);
+
+					if (toHappen.run) {
+
+						let amount = (40 / 100) * $result.amount;
+
+						let payment_reference = {'transaction' : b.transaction , 'amount' : amount};
+
 			let options = {
 
 				'Authorization' : 'Bearer ' + mySecretKey ,
@@ -172,11 +200,9 @@ module.exports = (opts) => {
 
 			let callback = (error , response , body) => { return mycallback(error , body); }
 
-				axios({	'method': 'post' , 'url' : url , 'data' : req.body , 'headers' : options })
+				axios({	'method': 'post' , 'url' : url , 'data' : payment_reference , 'headers' : options })
 
 				.then((result) => {
-
-			let b = req.body;
 
 			let $r = b.transaction;
 
@@ -194,8 +220,8 @@ module.exports = (opts) => {
 				
 				.catch((err) => {	
 
-					return $rpd.handler(res , 400 , {'message' : 'An Error has occured and the request cannot be fulfilled.'}); })
-	
+					return $rpd.handler(res , 400 , {'message' : 'An Error has occured and the request cannot be fulfilled.'}); }); } } });
+
 	 } 
 
 }

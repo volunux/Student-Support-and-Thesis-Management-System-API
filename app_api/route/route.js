@@ -45,6 +45,7 @@ let refundComment = require('./general-three/refund-comment');
 let refundSignature = require('./general-three/refund-signature');
 let reply = require('./general-three/reply');
 let requestCredential = require('./general-three/request-credential');
+let requestPassword = require('./general-three/request-password');
 
 /** General Three Routes **/
 
@@ -111,7 +112,8 @@ module.exports = (app) => {
 		app.use('/api/refund-comment' , cUser.roleType([...privilege.sPrivilege]) , refundComment);
 		app.use('/api/refund-signature' , cUser.roleType([...privilege.sPrivilege]) , refundSignature);
 		app.use('/api/reply' , cUser.roleType([...privilege.sPrivilege]) , reply);
-		app.use('/api/request-credential' , cUser.roleType([...privilege.sPrivilege]) , requestCredential);
+		app.use('/api/request-credential' , cUser.roleType([...privilege.sPrivilege , 'staff']) , requestCredential);
+		app.use('/api/request-password' , cUser.roleType([...privilege.sPrivilege , 'staff']) , requestPassword);
 
 /** General Three Routes **/
 
@@ -140,7 +142,7 @@ module.exports = (app) => {
 
 		app.use('/api' , (req , res , next) => { next(createError(404)); });
 
-		app.use('/api' , (err , req , res , next) => { console.log(err);
+		app.use('/api' , (err , req , res , next) => {
 
 				$rpd.handler(res , 404 , {'message' : 'An error has occured. The API url doesn\'t exist'});
 		});

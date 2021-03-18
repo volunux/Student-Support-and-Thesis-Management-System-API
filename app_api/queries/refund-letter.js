@@ -18,6 +18,8 @@ module.exports = {
 
 								WHERE rf.slug = $1
 
+								LIMIT 1
+
 								`;
 
 		return query;
@@ -36,7 +38,7 @@ module.exports = {
 
 											FROM USERS AS u 
 
-											WHERE u.user_id = rf.user_id) AS u ) AS author ,
+											WHERE u.user_id = rf.user_id LIMIT 1) AS u ) AS author ,
 
 									(SELECT row_to_json(lt)
 
@@ -53,6 +55,8 @@ module.exports = {
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.general_request_status_id = rf.status_id
 
 									WHERE rf.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -84,6 +88,8 @@ module.exports = {
 
 									WHERE rf.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -98,6 +104,8 @@ module.exports = {
 									FROM REFUND_LETTER AS lt
 
 									WHERE lt.slug = '1219821salkz'
+
+									LIMIT 1
 
 								`;
 

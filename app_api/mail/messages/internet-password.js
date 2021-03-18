@@ -24,7 +24,7 @@ module.exports = {
 
 				return { 'message' : `Your application has been successfully approved. Your Internet Password is as follows;
 
-							Password: ${req.body.requestPassword}
+							Password: ${req.body.password}
 							
 							Thank you for using our services.` ,
 

@@ -16,7 +16,7 @@ passport.use(new LocalStrategy({ 'usernameField' : 'email_address' } ,
 
 			let $e = email_address;
 
-			db.query(plan , [$e] , (err , result) => {
+			return db.query(plan , [$e] , (err , result) => {
 
 				if (err) { return done(err); }
 

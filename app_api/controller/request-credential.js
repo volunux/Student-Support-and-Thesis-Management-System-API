@@ -84,26 +84,6 @@ module.exports = (opts) => {
 						Date.now().toString(24); }
 		} ,
 
-	'createPassword' : (req , res , next) => {
-
-		let plan = query$.entryAddCred$s(req , res , {});
-
-		db.query(plan , [] , (err , result) => {
-
-				if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to add or save ${opts.word} entry or entries to record. Please try again.`}); }
-
-				if (result.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `Unable to add or save ${opts.word} entry to record.`}); }
-
-				if (result.rowCount >= 1) { let $result = result.rows[0];
-
-					let $entry = mailMessage.fulfilled(req , res , next , {'cred' : {'username' : n_username , 'password' : n_password } });
-
-					mailer.entryFulfilled(req , res , next , $result , $entry.title , $entry.message);
-
-					return $rpd.handler(res , 200 , $result); } });
-
-
-	}
 }
 
 }

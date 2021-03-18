@@ -20,11 +20,11 @@ module.exports = {
 
 			'condition' : {'one' : '' , 'two' : '' , 'three' : '' , 'four' : ''}};
 
-			if (privilege.normal.indexOf(req.user.role) > -1) { query.one = ` AND user_id = ${req.user._id}`; }
+			if (privilege.normal.indexOf(req.user.role) > -1) { query.condition.one = ` AND gp.user_id = ${req.user._id}`; }
 
-			if (req.user.role == 'hod') { query.one = ` AND department_id = ${req.user.department}`; }
+			if (req.user.role == 'hod') { query.condition.one = ` AND gp.department_id = ${req.user.department}`; }
 
-			if (req.user.role == 'dean') { query.one = ` AND faculty_id = ${req.user.faculty}`; }
+			if (req.user.role == 'dean') { query.condition.one = ` AND gp.faculty_id = ${req.user.faculty}`; }
 
 				return query;
 
@@ -38,16 +38,14 @@ module.exports = {
 
 			if (req.query && req.query.status) { let role = req.user.role , status = ('' + req.query.status).toLowerCase();
 
-				query.join.one = `INNER JOIN PAYMENT_STATUS AS grs ON ps.payment_status_id = p.status_id`;
-
 				query.condition.one = ` AND ps.name = ${status}`;
 
 
-				if (role == 'dean' || role == 'facultyPresident') { query.condition.two = ` AND p.faculty_id = ${req.user.faculty}`; }
+				if (role == 'dean' || role == 'facultyPresident') { query.condition.two = ` AND gp.faculty_id = ${req.user.faculty}`; }
 
-				else if (role == 'hod' || role == 'departmentPresident') { query.condition.two = ` AND p.department_id = ${req.user.department}`; }
+				else if (role == 'hod' || role == 'departmentPresident') { query.condition.two = ` AND gp.department_id = ${req.user.department}`; }
 
-				else if (role == 'student') { query.condition.two = ` AND p.user_id = ${req.user._id}`; }	
+				else if (role == 'student') { query.condition.two = ` AND gp.user_id = ${req.user._id}`; }	
 
 			}
 
@@ -64,15 +62,13 @@ module.exports = {
 
 
 
-				if (role == 'dean' || role == 'hod') { query.condition.one = ` AND p.faculty_id = ${req.user.faculty}`; }
+				if (role == 'dean' || role == 'facultyPresident') { query.condition.one = ` AND gp.faculty_id = ${req.user.faculty}`; }
 
-				else if (role == 'student') { query.condition.two = ` AND p.user_id = ${req.user._id}`; }
+				else if (role == 'student') { query.condition.two = ` AND gp.user_id = ${req.user._id}`; }
 
-				else if (role == 'departmentPresident') { query.condition.two = ` AND p.department_id = ${req.user.department}`; }
+				else if (role == 'hod' || role == 'departmentPresident') { query.condition.two = ` AND gp.department_id = ${req.user.department}`; }
 
-				else { 
-
-					query.join.one = `INNER JOIN FACULTY AS ft ON ft.faculty_id = p.faculty_id`;
+				else {
 
 					query.condition.one = ` AND ft.name LIKE '%${faculty}%'`; }
 
@@ -90,21 +86,17 @@ module.exports = {
 			if (req.query && req.query.department) { let role = req.user.role , dept = req.query.department;
 
 
-				if (role == 'hod' || role == 'departmentPresident') { query.condition.one = ` AND p.department_id = ${req.user.department}`; }
+				if (role == 'hod' || role == 'departmentPresident') { query.condition.one = ` AND gp.department_id = ${req.user.department}`; }
 
-				else if (role == 'dean') {
+				else if (role == 'dean' || role == 'facultyPresident') {
 
-					query.join.one = `INNER JOIN DEPARTMENT AS dt ON dt.department_id = p.department_id`;
-
-					query.condition.one = ` AND p.faculty_id = ${req.user.faculty}`; 
+					query.condition.one = ` AND gp.faculty_id = ${req.user.faculty}`; 
 
 					query.condition.two = ` AND dt.name LIKE '%${dept}%'`; }
 
-				else if (role == 'student') { query.condition.one = ` AND p.user_id = ${req.user._id}`; }
+				else if (role == 'student') { query.condition.one = ` AND gp.user_id = ${req.user._id}`; }
 
 				else {
-
-					query.join.one = `INNER JOIN DEPARTMENT AS dt ON dt.department_id = p.department_id`;
 
 					query.condition.one = ` AND dt.name LIKE '%${dept}%'`; }
 
@@ -122,17 +114,13 @@ module.exports = {
 
 		if (req.query && req.query.payment_reference) { let role = req.user.role , reference = req.query.payment_reference;
 
-			query.condition.one = ` AND p.payment_reference = ${reference}`;
+			query.condition.one = ` AND gp.payment_reference = ${reference}`;
 
-			if (role == 'hod') { query.condition.two = ` AND p.department_id = ${req.user.department}`; }
+			if (role == 'hod' || role == 'departmentPresident') { query.condition.two = ` AND gp.department_id = ${req.user.department}`; }
 
-			if (role == 'dean') { query.condition.two = ` AND p.faculty_id = ${req.user.faculty}`; }
+			if (role == 'dean' || role == 'facultyPresident') { query.condition.two = ` AND gp.faculty_id = ${req.user.faculty}`; }
 			
-			else if (role == 'student') { query.condition.two = ` AND p.user_id = ${req.user._id}`; }
-
-			else if (role == 'departmentPresident') { query.condition.two = ` AND p.department_id = ${req.user.department}`; }
-
-			else if (role == 'facultyPresident') { query.condition.two = ` AND p.faculty_id = ${req.user.faculty}`; } 
+			else if (role == 'student') { query.condition.two = ` AND gp.user_id = ${req.user._id}`; }
 
  			}
 

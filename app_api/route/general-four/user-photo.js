@@ -4,6 +4,10 @@ let router = express.Router();
 
 let cUser = require('../../helper/confirm-user');
 
+let UPhotoRepo = require(`../../queries/user-photo`).UserPhotoRepository;
+
+let query$ = new UPhotoRepo();
+
 let opts = {
 
 	'first' : 'UserPhoto' ,
@@ -20,6 +24,8 @@ let opts = {
 
 	'word' : 'User Photo' ,
 
+	'query$' : query$ ,
+
 	'normalPrivilege' : ['student' , 'departmentPresident' , 'facultyPresident'] ,
 
 	'superPrivilege' : ['moderator' , 'administrator' , 'superAdministrator'] ,
@@ -30,16 +36,20 @@ let opts = {
 
 };
 
-let gctrl = require('../../controller/general-one')(opts);
+let ectrl = require('../../controller/upload')(opts);
 
 	
+router.route('/entry/create')
+
+			.post(ectrl.entryAdd$);
+
 router.route('/entries')
 
 			.get(
 
 			cUser.roleType([...opts.superPrivilege]) ,
 
-			gctrl.entries);
+			ectrl.entries);
 
 
 router
@@ -55,7 +65,7 @@ router
 
 				cUser.roleType([...opts.superPrivilege]) , 
 
-				gctrl.entryDeleteMany$);
+				ectrl.entryDeleteMany$);
 
 router
 			.route('/delete/entry/all/')
@@ -64,10 +74,11 @@ router
 
 				cUser.roleType(['superAdministrator']) ,
 
-				gctrl.entryDeleteAll)
+				ectrl.entryDeleteAll)
 
 			.delete( cUser.roleType(['superAdministrator']) , 
 
-				gctrl.entryDeleteAll$);
+				ectrl.entryDeleteAll$);
+
 
 module.exports = router;

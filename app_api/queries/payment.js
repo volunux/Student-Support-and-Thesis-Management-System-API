@@ -4,6 +4,8 @@ let nuller = require('../utility/null-checker');
 
 let queryBuilder = require('../utility/query-builder');
 
+let sQuery = require('../search/payment');
+
 const { v4 : uuidv4 } = require('uuid');
 
 module.exports = {
@@ -33,6 +35,8 @@ module.exports = {
 
 									WHERE pt.slug = $1
 
+									LIMIT 1
+
 									`;
 
 		return query;
@@ -46,7 +50,11 @@ module.exports = {
 
 									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $2 AND pt.payment_type_id = gp.payment_type_id
 
-									WHERE gp.slug = $1`;
+									WHERE gp.slug = $1
+
+									LIMIT 1
+
+									`;
 
 		return query;
 
@@ -62,7 +70,11 @@ module.exports = {
 
 									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
 
-									WHERE gp.payment_reference = $1`;
+									WHERE gp.payment_reference = $1
+
+									LIMIT 1
+
+									`;
 
 		return query;
 
@@ -72,13 +84,31 @@ module.exports = {
 
 		let b = req.body;
 
+		let q = req.query;
+
+		let p = +(q.page) > 0 ? (+(q.page) - 1) * 10 : 0;
+
+		let $sq = sQuery.user(req , res , {});
+
+		if (q) { 
+
+			if (q.payment_reference) { $sq = sQuery.reference(req , res , {}); }
+
+			else if (q.status) { $sq = sQuery.status(req , res , {}); }
+
+			else if (q.faculty) { $sq = sQuery.faculty(req , res , {}); }
+
+			else if (q.department) { $sq = sQuery.department(req , res , {}); }
+
+		}
+
 		let query = `SELECT gp.payment_reference , gp.created_on AS paid_on , gp.email_address , gp.full_name , gp.phone_number , gp.payment_no AS num , gp.slug , pses.amount AS amount , pses.name AS payment_session , 
 
-									ps.word AS status , pt.name AS payment_type , dt.name AS department , ft.name AS faculty
+									ps.word AS status , pt.name AS payment_type , dt.name AS department , ft.name AS faculty , gp.user_id
 
 									FROM GENERAL_PAYMENT AS gp
 
-									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $1 AND pt.payment_type_id = gp.payment_type_id
+									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $1
 
 									INNER JOIN PAYMENT_SESSION AS pses ON pses.payment_session_id = gp.payment_session_id
 
@@ -88,9 +118,13 @@ module.exports = {
 
 									INNER JOIN DEPARTMENT AS dt ON dt.department_id = gp.department_id
 
+									${Object.values($sq.join).join(' ')}
+
+									WHERE gp.payment_type_id = pt.payment_type_id ${Object.values($sq.condition).join(' ')}
+
 									ORDER BY gp.updated_on DESC
 
-									LIMIT 11
+									LIMIT 11 OFFSET ${p}
 
 									`;
 
@@ -113,6 +147,8 @@ module.exports = {
 
 									WHERE pt.slug = $1
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -127,6 +163,8 @@ module.exports = {
 									INNER JOIN PAYMENT_SESSION AS ps ON ps.payment_session_id = $2 AND ps.payment_type_id = pt.payment_type_id
 
 									WHERE pt.payment_type_id = $1
+
+									LIMIT 1
 
 								`;
 
@@ -148,6 +186,8 @@ module.exports = {
 
 									WHERE gp.payment_type_id = $1 AND gp.user_id = $3 AND ps.name = 'success'
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -163,6 +203,8 @@ module.exports = {
 									INNER JOIN PAYMENT_TYPE AS pt ON pt.payment_type_id = $1
 
 									WHERE ps.payment_session_id = $2
+
+									LIMIT 1
 
 								`;
 
@@ -183,6 +225,8 @@ module.exports = {
 
 									WHERE gp.user_id = $3 AND ps.name = 'success'
 
+									LIMIT 1
+
 								`;
 
 		return query;
@@ -197,6 +241,8 @@ module.exports = {
 									INNER JOIN PAYMENT_TYPE AS pt ON pt.payment_type_id = $1
 
 									WHERE pses.payment_session_id = $2
+
+									LIMIT 1
 
 								`;
 
@@ -273,6 +319,8 @@ module.exports = {
 									INNER JOIN FACULTY AS d ON f.faculty_id = p.faculty_id
 
 									WHERE p.payment_reference = ${b.payment_reference}
+
+									LIMIT 1
 								
 								`;
 
@@ -325,7 +373,7 @@ module.exports = {
 
 											WHERE u.user_id = gp.user_id) AS users ) AS author ,
 
-									ps.word AS status , pt.name AS payment_type
+									ps.word AS status , pt.name AS payment_type , pses.amount AS amount , pses.name AS payment_session
 
 									FROM GENERAL_PAYMENT AS gp
 
@@ -333,12 +381,15 @@ module.exports = {
 
 									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
 
+									INNER JOIN PAYMENT_SESSION AS pses ON pses.payment_session_id = gp.payment_session_id
+
 									INNER JOIN DEPARTMENT AS dt ON dt.department_id = gp.department_id
 
 									INNER JOIN FACULTY AS ft ON ft.faculty_id = gp.faculty_id
 
 									WHERE gp.slug = $1
-								
+									
+									LIMIT 1
 								`;
 
 		return query;
@@ -360,6 +411,8 @@ module.exports = {
 									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $2 AND pt.payment_type_id = p.payment_type_id
 
 									WHERE p.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -433,6 +486,27 @@ module.exports = {
 
 	} ,
 
+	'entryRefundCheck' : (req , res , opts) => {
+
+		let query = `SELECT gp.general_payment_id AS _id , gp.payment_reference , gp.payment_type_id AS payment_type , gp.slug ,
+
+									gp.department_id AS department , gp.faculty_id AS faculty , pses.amount , ps.word AS status
+
+									FROM GENERAL_PAYMENT AS gp
+
+									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
+
+									INNER JOIN PAYMENT_SESSION AS pses ON pses.payment_session_id = gp.payment_session_id
+
+									WHERE gp.slug = $1 AND ps.word = 'Success'
+
+									LIMIT 1
+
+								`;
+
+		return query;
+
+	} ,
 
 	'entryUpdateRefund$' : (req , res , opts) => {
 
@@ -463,6 +537,8 @@ module.exports = {
 									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $2 AND pt.payment_type_id = gp.payment_type_id
 
 									WHERE gp.slug = $1
+
+									LIMIT 1
 
 								`;
 
@@ -504,7 +580,9 @@ module.exports = {
 
 									WHERE payment_no IN (${et}) AND pt.slug = $1 AND pt.payment_type_id = gp.payment_type_id
 
-									RETURNING gp.slug`;
+									RETURNING gp.slug
+
+								`;
 
 		return query;
 
@@ -520,7 +598,9 @@ module.exports = {
 
 									WHERE gp.slug IS NOT NULL
 
-									LIMIT 1`;
+									LIMIT 1
+
+								`;
 
 		return query;
 
@@ -557,6 +637,7 @@ module.exports = {
 									INNER JOIN FACULTY AS d ON f.faculty_id = p.faculty_id
 
 									WHERE p.slug = $1
+
 								`;
 
 		return query;

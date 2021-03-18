@@ -39,91 +39,6 @@ module.exports = {
 				else { return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}	}
 		} ,
 
-		'isOwner' : (Model , ModelName , urlParam , unit) => { return (req , res , next) => { let entry = req.params['entry'];
-
-				Model.findOne({'slug' : entry})
-																				.lean({})
-
-																				.select('requestType author department faculty unit -_id')
-
-																				.exec((err , entryResult) => {
-
-				if (req.user.unit != unit && req.user.role != 'student') {
-
-						return $rpd.handler(res , 404, {'message' : `${ModelName} entry does not exists in the record or is not available.`}	);	}
-
-				if (err) {
-
-						return $rpd.handler(res , 400 , err);	}
-
-				if (!entryResult) {
-
-						return $rpd.handler(res , 404 , {'message' : `${ModelName} entry does not exists in the record or is not available.`}	);	}
-
-				if (entryResult.author != req.user._id && req.user.role == 'student') {
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (entryResult.department != req.user.department && req.user.role == 'hod') {
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (entryResult.faculty != req.user.faculty && req.user.role == 'dean') {
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (entryResult.unit != req.user.unit && req.user.unit != null) {
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-																							
-						return next();	});	}
-		} ,
-
-	'isOwner2' : function(Model , ModelName , urlParam) {
-
-			return function(req , res , next) { let dataUrl = req.params[urlParam];
-
-				Model.findOne({'slug' : dataUrl})
-																						.lean({})
-
-																						.exec((err , entryResult) => {
-				
-				if (err) {					return $rpd.handler(res , 400 , err);		}
-
-				if (!entryResult) {	return $rpd.handler(res , 404 , {'message' : `${ModelName} entry does not exists in the record or is not available.`}	);		}
-
-				if (entryResult.author != req.user._id && (req.user.role == 'student')) {	return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-																						
-																																												return next();		})	}
-	} ,
-
-		'$isOwner' : (req , res , next , entryResult , entryType , tHappen , normalPrivilege , superPrivilege , callback , leastPrivilege) => {
-
-			let author = typeof entryResult.author == 'string' ? entryResult.author : entryResult.author instanceof Object && entryResult.author._id ? entryResult.author._id : "5fb2d2f175f95a570adfa1d6";
-
-				if (req.user.unit != entryResult.unit && normalPrivilege.indexOf(req.user.role) < 0 && superPrivilege.indexOf(req.user.role) < 0) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`}	);	}
-
-				if (author != req.user._id && normalPrivilege.indexOf(req.user.role) > -1) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (entryResult.department != req.user.department && (leastPrivilege.indexOf(req.user.role) + 1) == 1) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (entryResult.faculty != req.user.faculty &&  (leastPrivilege.indexOf(req.user.role) + 1) == 2) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (entryResult.unit != req.user.unit && req.user.unit != null && superPrivilege.indexOf(req.user.role) < 0) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (callback && !tHappen) { return callback(req , res , next , entryResult); }
-		} ,
-
 		'$isOwnerGR' : (req , res , next , eResult , tHappen , nPrivilege , sPrivilege , cb , lPrivilege , ed) => {
 
 			let author = typeof eResult.author == 'string' || typeof eResult.author == 'number' ? eResult.author : eResult.author instanceof Object && eResult.author._id ? eResult.author._id : 78788;
@@ -187,33 +102,6 @@ module.exports = {
 				if (cb && !tHappen) { return cb(req , res , next , eResult); }
 		} ,
 
-		'$isOwnerUpdate' : (req , res , next , entryResult , entryType , tHappen , normalPrivilege , superPrivilege , callback , leastPrivilege) => {
-
-			let author = typeof entryResult.author == 'string' ? entryResult.author : entryResult.author instanceof Object && entryResult.author._id ? entryResult.author._id : "5fb2d2f175f95a570adfa1d6";
-
-				if (req.user.unit != entryResult.unit && normalPrivilege.indexOf(req.user.role) < 0 && superPrivilege.indexOf(req.user.role) < 0) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`}	);	}
-
-				if (author != req.user._id && normalPrivilege.indexOf(req.user.role) > -1) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (entryResult.department != req.user.department && (leastPrivilege.indexOf(req.user.role) + 1) == 1) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (entryResult.faculty != req.user.faculty && (leastPrivilege.indexOf(req.user.role) + 1) == 2) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (entryResult.unit != req.user.unit && req.user.unit != null && superPrivilege.indexOf(req.user.role) < 0) { if (tHappen) tHappen.run = false;
-
-						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`});	}
-
-				if (callback && !tHappen) { return callback(req , res , next , entryResult); }
-		} ,
-
 		'$isOwnerRefund' : (req , res , next , eResult , tHappen , nPrivilege , sPrivilege , lPrivilege , cb) => {
 
 			let author = typeof eResult.author == 'number' || typeof eResult.author == 'string' ? eResult.author : eResult.author instanceof Object && eResult.author._id ? eResult.author._id : 28218;
@@ -265,6 +153,26 @@ module.exports = {
 
 				if (cb) { return cb(req , res , next , eResult); }
 		} ,
+
+		'$canRefundPayment' : (req , res , next , eResult , tHappen , nPrivilege , sPrivilege , lPrivilege , cb) => {
+
+			let author = typeof eResult.author == 'string' || typeof eResult.author == 'number' ? eResult.author : eResult.author instanceof Object && eResult.author._id ? eResult.author._id : 78788;
+
+				if (eResult.department != req.user.department && nPrivilege.indexOf(req.user.role) == 0) {
+
+					if (tHappen) { tHappen.run = false; }
+
+						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`}); }
+
+				if (eResult.faculty != req.user.faculty && nPrivilege.indexOf(req.user.role) == 1) {
+
+					if (tHappen) { tHappen.run = false; }
+
+						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`}); }
+
+				if (cb && !tHappen) { return cb(req , res , next , eResult); }
+		} ,
+
 
 		'$isOwnerGeneral' : (req , res , next , entryResult , callback) => {
 

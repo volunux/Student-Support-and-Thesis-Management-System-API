@@ -22,7 +22,7 @@ module.exports = {
 
 											FROM USERS AS u 
 
-											WHERE u.user_id = rf.user_id) AS u ) AS author ,
+											WHERE u.user_id = rf.user_id LIMIT 1) AS u ) AS author ,
 
 									(SELECT row_to_json(h)
 
@@ -30,7 +30,7 @@ module.exports = {
 
 											FROM USERS AS h
 
-											WHERE h.user_id = rf.handler_id) AS h ) AS entry_handler ,
+											WHERE h.user_id = rf.handler_id LIMIT 1) AS h ) AS entry_handler ,
 
 									(SELECT row_to_json(stage)
 
@@ -38,7 +38,7 @@ module.exports = {
 
 											FROM REFUND_STAGE AS rfs 
 
-											WHERE rfs.refund_stage_id = rf.stage_id) AS stage ) AS stage ,
+											WHERE rfs.refund_stage_id = rf.stage_id LIMIT 1) AS stage ) AS stage ,
 
 									(SELECT json_agg(row_to_json(sig))
 
