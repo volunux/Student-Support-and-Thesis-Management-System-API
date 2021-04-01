@@ -1,0 +1,33 @@
+https://volunux.github.io/Student-Support-and-Thesis-Management-System/
+
+Private API KEY
+
+e1df3f287d7833da90a045ee9ee905c9-6e0fd3a4-8c38dbf7
+
+
+Public Validation Key
+
+pubkey-979250a16321335e89d1f3c325e915ab
+
+HTTP Webhook Signing Key
+
+e1df3f287d7833da90a045ee9ee905c9-6e0fd3a4-8c38dbf7
+
+https://api.mailgun.net/v3/sandbox0165461430ab418289903681adaf19da.mailgun.org
+
+
+const mailgun = require("mailgun-js");
+const DOMAIN = 'YOUR_DOMAIN_NAME';
+const mg = mailgun({apiKey: api_key, domain: DOMAIN});
+const data = {
+	from: 'Excited User <me@samples.mailgun.org>',
+	to: 'bar@example.com, YOU@YOUR_DOMAIN_NAME',
+	subject: 'Hello',
+	text: 'Testing some Mailgun awesomness!'
+};
+mg.messages().send(data, function (error, body) {
+	console.log(body);
+});
+
+
+sandbox0165461430ab418289903681adaf19da.mailgun.org

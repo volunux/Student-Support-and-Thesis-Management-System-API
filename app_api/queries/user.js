@@ -239,7 +239,7 @@ module.exports = {
 	'entryUpdate$' : (req , res , opts) => {
 
 		let b = req.body;
-
+// I need to update some details here; and it is very necessary.
 		let query = `UPDATE USERS
 
 									SET first_name = $$${b.first_name}$$ , last_name = $$${b.last_name}$$ , country_id = $$${b.country}$$ , level_id = $$${b.level}$$ , about = $$${b.about}$$

@@ -223,7 +223,7 @@ module.exports = {
 
 									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
 
-									WHERE gp.user_id = $3 AND ps.name = 'success'
+									WHERE gp.payment_type_id = $1 AND gp.user_id = $3 AND ps.name = 'success'
 
 									LIMIT 1
 
