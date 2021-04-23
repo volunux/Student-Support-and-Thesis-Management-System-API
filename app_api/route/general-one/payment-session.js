@@ -46,7 +46,7 @@ router.route('/entry/:entry/exists')
 
 router.route('/entry/create')
 
-			.get(gctrl.entryAdd2)
+			.get(gctrl.entryAdd)
 
 			.post(
 

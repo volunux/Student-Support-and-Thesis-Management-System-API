@@ -6,19 +6,19 @@ let cUser = require('../../helper/confirm-user');
 
 let opts = {
 
-	'first' : 'PaymentStatus' ,
+	'first' : 'AccountChangeMessageTemplate' ,
 
-	'second' : 'Payment Status' ,
+	'second' : 'Account Change Message Template' ,
 
-	'third' : 'payment-status' ,
+	'third' : 'account-change-message-template' ,
 
-	'fourth' : 'paymentStatus' ,
+	'fourth' : 'accountChangeMessageTemplate' ,
 
-	'fifth' : 'PaymentStatus' ,
+	'fifth' : 'AccountChangeMessageTemplate' ,
 
-	'query' : 'payment-status' ,
+	'query' : 'account-change-message-template' ,
 
-	'word' : 'Payment Status' ,
+	'word' : 'Account Change Message Template' ,
 
 	'normalPrivilege' : ['student' , 'departmentPresident' , 'facultyPresident'] ,
 
@@ -36,64 +36,78 @@ let validator = require('../../validators/register')(opts);
 router
 			.route('/entries')
 
-			.get(gctrl.entries);
+			.get(
+
+				gctrl.entries);
 
 
 router.route('/entry/:entry/exists')
 
-			.get(gctrl.entryExists);
+			.get(
+
+				cUser.roleType([...opts.superPrivilege]) ,
+
+				gctrl.entryExists);
 
 
 router.route('/entry/create')
 
-			.get(gctrl.entryAdd2)
+			.get(
+
+				gctrl.entryAdd)
 
 			.post(
 
-				validator.generalTwo$ ,
+				validator.messageTemplate$ ,
 
 				gctrl.entryAdd$);
 
 
 router.route('/entry/:entry/detail')
 
-			.get(gctrl.entryDetail);
+			.get(
+
+				gctrl.entryDetail);
 
 
 router.route('/entry/:entry/update')
 
-			.get(gctrl.entryUpdate)
+			.get(
+
+				gctrl.entryUpdate)
 
 			.put(
 
-				validator.generalTwo$ ,
+				validator.messageTemplate$ ,
 
 				gctrl.entryUpdate$);
 
 
 router.route('/entry/:entry/delete')
 
-			.get(gctrl.entryDelete)
+			.get(
 
-			.delete(gctrl.entryDelete$);
+				gctrl.entryDelete)
+
+			.delete(
+
+				gctrl.entryDelete$);
 
 
 router.route('/delete/entry/many')
 
-			.patch(gctrl.entryDeleteMany$);
+			.patch(
+
+				gctrl.entryDeleteMany$);
 
 
 router.route('/delete/entry/all')
 
 			.get(
 
-				cUser.roleType(['superAdministrator']) ,
-
 				gctrl.entryDeleteAll)
 
 			.delete(
-
-				cUser.roleType(['superAdministrator']) ,
 
 				gctrl.entryDeleteAll$);
 

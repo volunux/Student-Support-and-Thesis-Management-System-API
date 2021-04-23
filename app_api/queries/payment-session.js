@@ -1,7 +1,5 @@
 let crypto = require('crypto-random-string');
 
-let nuller = require('../utility/null-checker');
-
 let queryBuilder = require('../utility/query-builder');
 
 let sQuery = require('../search/general-one/payment-session');
@@ -26,11 +24,13 @@ module.exports = {
 
 		}
 
-		let query = `SELECT pses.name , pses.updated_on , pses.payment_session_no AS num , pses.slug , gs.word AS status
+		let query = `SELECT pses.name , pses.updated_on , pses.payment_session_no AS num , pses.slug , pses.amount , pt.name AS type , gs.word AS status
 
 									FROM PAYMENT_SESSION AS pses
 
 									INNER JOIN STATUS AS gs ON gs.status_id = pses.status_id
+
+									INNER JOIN PAYMENT_TYPE AS pt ON pt.payment_type_id = pses.payment_type_id
 
 									${Object.values($sq.join).join(' ')}
 
@@ -67,6 +67,8 @@ module.exports = {
 
 									'Status' , (SELECT json_agg(row_to_json(gs)) FROM (SELECT status_id AS _id , word FROM STATUS) AS gs ) ,
 
+									'EntryType' , (SELECT json_agg(row_to_json(pt)) FROM (SELECT payment_type_id AS _id , name FROM PAYMENT_TYPE) AS pt )
+
 									) AS result
 
 								`;
@@ -96,11 +98,19 @@ module.exports = {
 
 		query += b.name ? `name , ` : '';
 
+		query += b.amount ? `amount , ` : '';
+
+		query += b.entry_type ? `payment_type_id , ` : '';
+
 		query += `payment_session_no , slug , user_id , status_id ) `;
 
 		query += ` VALUES (`;
 
 		query += b.name ? `$$${b.name}$$ , ` : '';
+
+		query += b.amount ? `$$${b.amount}$$ , ` : '';
+
+		query += b.entry_type ? `$$${b.entry_type}$$ , ` : '';
 
 		query += ` $$${c}$$ , $$${s}$$ , $$${b.author}$$ , (SELECT status_id AS _id FROM STATUS AS gs WHERE gs.word = 'Active' LIMIT 1) ) 
 
@@ -112,11 +122,13 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT pses.payment_session_id AS _id , pses.name , pses.updated_on , gs.word AS status
+		let query = `SELECT pses.payment_session_id AS _id , pses.amount , pses.name , pses.slug , pses.updated_on , gs.word AS status , pt.name AS payment_type
 
 									FROM PAYMENT_SESSION AS pses
 
 									LEFT JOIN STATUS AS gs ON gs.status_id = pses.status_id
+
+									INNER JOIN PAYMENT_TYPE AS pt ON pt.payment_type_id = pses.payment_type_id
 
 									WHERE pses.slug = $1
 
@@ -140,9 +152,15 @@ module.exports = {
 
 																			FROM STATUS) AS gs ) ,
 
+											'EntryType' , (SELECT json_agg(row_to_json(pt)) 
+
+																		FROM (SELECT payment_type_id AS _id , name 
+
+																			FROM PAYMENT_TYPE) AS pt ) ,
+
 											'Entry' , (SELECT row_to_json(et) 
 
-																		FROM (SELECT pses.name , pses.slug , pses.status_id AS status
+																		FROM (SELECT pses.name , pses.slug , pses.status_id AS status , pses.amount , pses.payment_type_id AS entry_type 
 
 																			FROM PAYMENT_SESSION AS pses
 
@@ -162,15 +180,15 @@ module.exports = {
 
 		let b = req.body;
 
-		let builder$ = queryBuilder.update$(b , 'general');
+		let builder$ = queryBuilder.update$(b , 'paymentSession');
 
 		let query = `UPDATE PAYMENT_SESSION
 
 									SET ${builder$}
 
-									WHERE slug = $1 
+									WHERE slug = $1
 
-									RETURNING name , slug
+									RETURNING name , amount , slug
 
 								`;
 
@@ -180,7 +198,7 @@ module.exports = {
 
 	'entryDelete' : (req , res , opts) => {
 
-		let query = `SELECT pses.slug , pses.name , gs.word AS status
+		let query = `SELECT pses.slug , pses.name , pses.amount , gs.word AS status
 
 									FROM PAYMENT_SESSION AS pses
 
@@ -204,7 +222,7 @@ module.exports = {
 
 									WHERE slug = $1 
 
-									RETURNING name , slug
+									RETURNING name , amount , slug
 
 								`;
 
@@ -226,7 +244,7 @@ module.exports = {
 
 									WHERE payment_session_no IN (${et})
 
-									RETURNING name , slug
+									RETURNING name , amount , slug
 
 								`;
 
@@ -256,7 +274,9 @@ module.exports = {
 
 									FROM PAYMENT_SESSION
 
-									RETURNING name , slug`;
+									RETURNING name , amount , slug
+
+									`;
 
 		return query;
 

@@ -30,10 +30,9 @@ module.exports = {
 
 			if (req.query && req.query.title) { let title = req.query.title;
 
-				query.condition.one = `WHERE rmt.name LIKE '%${title}%'`; }
+				query.condition.one = `WHERE acmtt.title LIKE '%${title}%'`; }
 
 			return query;
 	
 		} ,
-
 }

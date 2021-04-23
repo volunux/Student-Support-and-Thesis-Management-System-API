@@ -218,9 +218,23 @@ module.exports = {
 
 																			FROM COUNTRY) AS ct ) ,
 
+											'Faculty' , (SELECT json_agg(row_to_json(ft)) 
+
+																		FROM (SELECT faculty_id AS _id , name 
+
+																			FROM FACULTY) AS ft ) ,
+
+											'Department' , (SELECT json_agg(row_to_json(dt)) 
+
+																		FROM (SELECT department_id AS _id , name 
+
+																			FROM DEPARTMENT) AS dt ) ,
+
 											'User' , (SELECT row_to_json(u) 
 
-																		FROM (SELECT u.first_name , u.last_name , u.about , u.country_id AS country , u.level_id AS level
+																		FROM (SELECT u.first_name , u.last_name , u.about , u.country_id AS country , u.level_id AS level , u.department_id AS department , u.faculty_id AS faculty ,
+
+																					u.matriculation_number , u.jamb_registration_number , u.identity_number
 
 																			FROM USERS AS u
 
@@ -239,10 +253,20 @@ module.exports = {
 	'entryUpdate$' : (req , res , opts) => {
 
 		let b = req.body;
-// I need to update some details here; and it is very necessary.
+		
+		let query1 = ``;
+
+		query1 += b.matriculation_number ? ` , matriculation_number = ${b.matriculation_number} ` : '';
+
+		query1 += b.jamb_registration_number ? ` , jamb_registration_number = ${b.jamb_registration_number} ` : '';
+
+		query1 += b.identity_number ? ` , identity_number = ${b.identity_number}` : '';
+
 		let query = `UPDATE USERS
 
-									SET first_name = $$${b.first_name}$$ , last_name = $$${b.last_name}$$ , country_id = $$${b.country}$$ , level_id = $$${b.level}$$ , about = $$${b.about}$$
+									SET first_name = $$${b.first_name}$$ , last_name = $$${b.last_name}$$ , faculty_id = $$${b.faculty}$$ , department_id = $$${b.department}$$ , country_id = $$${b.country}$$ ,
+
+									level_id = $$${b.level}$$ , about = $$${b.about}$$ ${query1}
 
 									WHERE user_id = $1
 

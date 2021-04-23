@@ -14,6 +14,8 @@ module.exports = {
 
 									'GeneralRequest' , (SELECT row_to_json(gr) FROM (SELECT COUNT(*) AS total , 'General Request' AS name FROM GENERAL_REQUEST) AS gr ) ,
 
+									'AccountChangeRequest' , (SELECT row_to_json(acr) FROM (SELECT COUNT(*) AS total , 'Account Change Request' AS name FROM ACCOUNT_CHANGE_REQUEST) AS acr ) ,
+
 									'GeneralPayment' , (SELECT row_to_json(gp) FROM (SELECT COUNT(*) AS total , 'General Payment' AS name FROM GENERAL_PAYMENT) AS gp ) ,
 
 									'Refund' , (SELECT row_to_json(rf) FROM (SELECT COUNT(*) AS total , 'Refund' AS name FROM REFUND) AS rf )
@@ -156,7 +158,9 @@ module.exports = {
 
 									'RefundStage' , (SELECT row_to_json(rfst) FROM (SELECT COUNT(*) AS total , 'Refund Stage' AS name FROM REFUND_STAGE) AS rfst ) ,
 
-									'RequestMessageTemplate' , (SELECT row_to_json(rmt) FROM (SELECT COUNT(*) AS total , 'Request Message Template' AS name FROM REQUEST_MESSAGE_TEMPLATE) AS rmt ) ,
+									'RequestMessageTemplate' , (SELECT row_to_json(rcmt) FROM (SELECT COUNT(*) AS total , 'Request Message Template' AS name FROM REQUEST_CHANGE_MESSAGE_TEMPLATE) AS rcmt ) ,
+
+									'AccountMessageTemplate' , (SELECT row_to_json(acmt) FROM (SELECT COUNT(*) AS total , 'Account Message Template' AS name FROM ACCOUNT_CHANGE_MESSAGE_TEMPLATE) AS acmt ) ,
 
 									'RequestType' , (SELECT row_to_json(rt) FROM (SELECT COUNT(*) AS total , 'Request Type' AS name FROM REQUEST_TYPE) AS rt ) ,
 
@@ -197,6 +201,8 @@ module.exports = {
 		let query = `SELECT json_build_object(
 
 									'GeneralRequestComment' , (SELECT row_to_json(grc) FROM (SELECT COUNT(*) AS total , 'General Request Comment' AS name FROM GENERAL_REQUEST_COMMENT) AS grc ) ,
+
+									'AccountRequestComment' , (SELECT row_to_json(arc) FROM (SELECT COUNT(*) AS total , 'Account Request Comment' AS name FROM ACCOUNT_CHANGE_REQUEST_COMMENT) AS arc ) ,
 
 									'RefundComment' , (SELECT row_to_json(rfc) FROM (SELECT COUNT(*) AS total , 'Refund Comment' AS name FROM REFUND_COMMENT) AS rfc ) ,
 

@@ -9,7 +9,7 @@ module.exports = (opts) => {
 
 		let mailMessage = require(`../mail/messages/internet-credential`);
 
-		let mailer = require('../mail/mail');
+		let mailer = require('../mail/sendgrid');
 
 	return {
 
@@ -59,7 +59,9 @@ module.exports = (opts) => {
 
 										let $entry = mailMessage.fulfilled(req , res , next , {'cred' : {'username' : n_username , 'password' : n_password } });
 
-										mailer.entryFulfilled(req , res , next , $result3 , $entry.title , $entry.message);
+										let payload = {'user' : {'email_address' : $result3.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+										mailer.send(payload);
 
 										return $rpd.handler(res , 200 , $result3); } }); } }); } });
 

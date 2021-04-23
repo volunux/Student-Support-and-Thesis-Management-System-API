@@ -61,6 +61,32 @@ module.exports = {
 
 			map$.set('abbreviation' , 'abbreviation');
 			map$.set('unit' , 'unit_id');
+			map$.set('title' , 'title');
+
+			return map$; 	} ,
+
+	'paymentSession' : () => {
+
+			let map$ = QueryBuilderTableMap.common();
+
+			map$.set('amount' , 'amount');
+			map$.set('entry_type' , 'payment_type_id');
+
+			return map$; 	} ,
+
+	'accountChangeMessageTemplateType' : () => {
+
+			let map$ = QueryBuilderTableMap.common();
+
+			map$.set('title' , 'title');
+
+			return map$; 	} ,
+
+	'requestChangeMessageTemplateType' : () => {
+
+			let map$ = QueryBuilderTableMap.common();
+
+			map$.set('title' , 'title');
 
 			return map$; 	} ,
 
@@ -77,6 +103,7 @@ module.exports = {
 			let map$ = QueryBuilderTableMap.common();
 
 			map$.set('word' , 'word');
+			map$.set('other_name' , 'other_name');
 
 			return map$; 	} ,
 
@@ -106,12 +133,23 @@ module.exports = {
 
 		return QueryBuilderTableMap.photo(); } ,
 
-	'requestMessageTemplate' : () => {
+	'accountChangeMessageTemplate' : () => {
 
 			let map$ = QueryBuilderTableMap.common();
 
 			map$.set('title' , 'title');
 			map$.set('body' , 'body');
+			map$.set('entry_type' , 'account_change_message_template_type_id');
+
+			return map$; } ,
+
+	'requestChangeMessageTemplate' : () => {
+
+			let map$ = QueryBuilderTableMap.common();
+
+			map$.set('title' , 'title');
+			map$.set('body' , 'body');
+			map$.set('entry_type' , 'account_change_message_template_type_id');
 
 			return map$; } ,
 }

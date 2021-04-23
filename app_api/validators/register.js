@@ -14,6 +14,11 @@ let refundUpdateLetter = require('./schema/refund/letter');
 let refundUpdate = require('./schema/refund/refund-update');
 let refundStage = require('./schema/refund/refund-stage');
 
+let accountChangeRequest = require('./schema/general-five/account-change-request');
+let accountChangeRequestUpdate = require('./schema/general-five/other-request');
+let miscRequest = require('./schema/general-five/misc-request');
+let miscRequestUpdate = require('./schema/general-five/other-request');
+
 let comment = require('./schema/comment');
 
 let payment = require('./schema/payment/payment');
@@ -26,6 +31,10 @@ let userPhoto = require('./schema/user/photo');
 let userPassword = require('./schema/user/password');
 let deleteEntry = require('./schema/delete-entry');
 let requestMessageTemplate = require('./schema/request-message-template');
+
+
+let messageTemplate = require('./schema/general-five/message-template');
+let messageTemplateType = require('./schema/general-five/message-template-type');
 
 
 
@@ -91,7 +100,7 @@ module.exports = (opts) => {
 
 		let $err = paymentSession.validator.validate(req.body , joiOptions);
 
-		let msgList = valiationMsgBuilder.build(req , res , $err , 'general');
+		let msgList = valiationMsgBuilder.build(req , res , $err , 'payment');
 
 		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to save or update ${opts.second} entry. Please try again.` , 'details' : msgList}); }
 
@@ -312,6 +321,78 @@ module.exports = (opts) => {
 		let msgList = valiationMsgBuilder.build(req , res , $err , 'requestMessageTemplate');
 
 		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to process ${opts.second} entry. Please try again.` , 'details' : msgList}); }
+
+		else { return next(); }
+
+	} ,
+
+	'accountChangeRequest$' : (req , res , next) => {
+
+		let $err = accountChangeRequest.validator.validate(req.body , joiOptions);
+
+		let msgList = valiationMsgBuilder.build(req , res , $err , 'accountChangeRequest');
+
+		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to save or update ${opts.second} entry. Please try again.` , 'details' : msgList}); }
+
+		else { return next(); }
+
+	} ,
+
+	'accountChangeRequestUpdate$' : (req , res , next) => {
+
+		let $err = accountChangeRequestUpdate.validator.validate(req.body , joiOptions);
+
+		let msgList = valiationMsgBuilder.build(req , res , $err , 'accountChangeRequestUpdate');
+
+		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to save or update ${opts.second} entry. Please try again.` , 'details' : msgList}); }
+
+		else { return next(); }
+
+	} ,
+
+	'miscRequest$' : (req , res , next) => {
+
+		let $err = miscRequest.validator.validate(req.body , joiOptions);
+
+		let msgList = valiationMsgBuilder.build(req , res , $err , 'miscRequest');
+
+		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to save or update ${opts.second} entry. Please try again.` , 'details' : msgList}); }
+
+		else { return next(); }
+
+	} ,
+
+	'miscRequestUpdate$' : (req , res , next) => {
+
+		let $err = miscRequestUpdate.validator.validate(req.body , joiOptions);
+
+		let msgList = valiationMsgBuilder.build(req , res , $err , 'miscRequestUpdate');
+
+		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to save or update ${opts.second} entry. Please try again.` , 'details' : msgList}); }
+
+		else { return next(); }
+
+	} ,
+
+	'messageTemplate$' : (req , res , next) => {
+
+		let $err = messageTemplate.validator.validate(req.body , joiOptions);
+
+		let msgList = valiationMsgBuilder.build(req , res , $err , 'messageTemplate');
+
+		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to save or update ${opts.second} entry. Please try again.` , 'details' : msgList}); }
+
+		else { return next(); }
+
+	} ,
+
+	'messageTemplateType$' : (req , res , next) => {
+
+		let $err = messageTemplateType.validator.validate(req.body , joiOptions);
+
+		let msgList = valiationMsgBuilder.build(req , res , $err , 'messageTemplateType');
+
+		if (msgList.length > 0) { return $rpd.handler(res , 400 , {'message' : `Unable to save or update ${opts.second} entry. Please try again.` , 'details' : msgList}); }
 
 		else { return next(); }
 

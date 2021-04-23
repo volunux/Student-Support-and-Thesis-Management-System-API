@@ -17,7 +17,9 @@ module.exports = {
 										user_id								INT NOT NULL,
 										status_id 						INT NOT NULL,
 
-										CONSTRAINT PAYMENT_SESSION_PKEY PRIMARY KEY(payment_session_id)	)	
+										CONSTRAINT PAYMENT_SESSION_PKEY PRIMARY KEY(payment_session_id)	
+
+										)
 
 										`
 

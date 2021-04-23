@@ -34,7 +34,7 @@ module.exports = {
 
 										WHERE u.user_id = rp.user_id) AS u ) AS author
 
-									FROM REQUEST_PASSWORD AS rc
+									FROM REQUEST_PASSWORD AS rp
 
 									INNER JOIN STATUS AS gs ON gs.status_id = rp.status_id
 

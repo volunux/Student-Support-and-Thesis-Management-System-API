@@ -16,21 +16,15 @@ module.exports = (opts) => {
 
 	let query$ = require(`../queries/authentication`);
 
-	let mailer = require('../mail/mail');
+	let mailMessage = require(`../mail/messages/user`);
+
+	let mailer = require('../mail/sendgrid');
 
 	return {
 
 		'signUp' : (req , res , next) => {
 
 				async.parallel({
-
-				'Department' : (callback) => { db.query(query$.department$(req , res , {}) , [] , callback); } ,
-
-				'Faculty' : (callback) => { db.query(query$.faculty$(req , res , {}) , [] , callback); } ,
-
-				'Level' : (callback) => { db.query(query$.level$(req , res , {}) , [] , callback); } ,
-
-				'Role' : (callback) => { db.query(query$.role$(req , res , {}) , [] , callback); } ,
 
 				'Country' : (callback) => { db.query(query$.country$(req , res , {}) , [] , callback); } ,
 
@@ -40,23 +34,9 @@ module.exports = (opts) => {
 
 					if (!result) { return $rpd.handler(res , 400 , {'message' : `Data cannot be retrieved.`}); }
 
-					if (result.Department && result.Department.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `Department entries does not exists in the record or is not available.`}); }
-
-					if (result.Faculty && result.Faculty.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `Faculty entries does not exists in the record or is not available.`}); }
-
-					if (result.Level && result.Level.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `Level entries does not exists in the record or is not available.`}); }
-
 					if (result.Country && result.Country.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `Country entries does not exists in the record or is not available.`}); }
 
 					if (result) { let $result = {};
-
-							$result['Department'] = result.Department.rows;
-
-							$result['Faculty'] = result.Faculty.rows;
-
-							$result['Level'] = result.Level.rows;
-
-							$result['Role'] = result.Role.rows;
 
 							$result['Country'] = result.Country.rows;
 
@@ -110,7 +90,11 @@ module.exports = (opts) => {
 
 								if (result2.rowCount >= 1) { let $result2 = result2.rows[0];
 
-									mailer.userAdd(req , res , next , b);
+		 							let $entry = {'title' : mailMessage.create2().title , 'message' : mailMessage.create2().message };
+
+									let payload = {'user' : {'email_address' : b.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+									mailer.send(payload);
 
 									let $u = $result2._id;
 

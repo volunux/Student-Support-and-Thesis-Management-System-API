@@ -9,7 +9,7 @@ module.exports = (opts) => {
 
 		let mailMessage = require(`../mail/messages/internet-password`);
 
-		let mailer = require('../mail/mail');
+		let mailer = require('../mail/sendgrid');
 
 	return {
 
@@ -29,7 +29,9 @@ module.exports = (opts) => {
 
 						let $entry = mailMessage.fulfilled(req , res , next , {});
 
-						mailer.entryFulfilled(req , res , next , $result , $entry.title , $entry.message);
+						let payload = {'user' : {'email_address' : $result.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+						mailer.send(payload);
 
 						return $rpd.handler(res , 200 , $result); } });
 

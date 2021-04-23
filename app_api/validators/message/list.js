@@ -6,6 +6,7 @@ let user = require('./user');
 let photo = require('./photo');
 let deleteEntry = require('./delete-entry');
 let requestMessageTemplate = require('./message-template');
+let messageTemplate = require('./message-template');
 
 module.exports = {
 
@@ -36,6 +37,14 @@ module.exports = {
 
 	'refund' : { ...commons.messages } ,
 
+	'accountChangeRequest' : { ...commons.messages } ,
+
+	'accountChangeRequestUpdate' : { ...commons.messages } ,
+
+	'miscRequest' : { ...commons.messages } ,
+
+	'miscRequestUpdate' : { ...commons.messages } ,
+	
 	'refundUpdate' : { ...commons.messages , ...refundUpdate.messages } ,
 
 	'refundUpdateLetter' : { ...commons.messages , ...refundUpdate.messages , 
@@ -54,7 +63,7 @@ module.exports = {
 
 														'base' : 'should only be of type String.'	}	} } ,
 
-	'payment' : { ...payment.messages } ,
+	'payment' : { ...payment.messages , ...commons.messages } ,
 
 	'user' : { ...user.messages } ,
 
@@ -62,8 +71,8 @@ module.exports = {
 
 	'deleteEntry' : { ...commons.messages , ...deleteEntry.messages } , 
 
-	'requestMessageTemplate' : { ...commons.messages , ...requestMessageTemplate.messages , 
+	'requestMessageTemplate' : { ...commons.messages , ...requestMessageTemplate.messages } ,
 
-													} ,
+	'messageTemplate' : { ...commons.messages , ...messageTemplate.messages } ,
 
 }

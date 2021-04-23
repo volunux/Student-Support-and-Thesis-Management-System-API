@@ -4,6 +4,8 @@ let nuller = require('../utility/null-checker');
 
 let queryBuilder = require('../utility/query-builder');
 
+let sQuery = require('../search/admin');
+
 const { v4 : uuidv4 } = require('uuid');
 
 module.exports = {
@@ -28,6 +30,24 @@ module.exports = {
 
 		let b = req.body;
 
+		let q = req.query;
+
+		let p = +(q.page) > 0 ? (+(q.page) - 1) * 10 : 0;
+
+		let $sq = sQuery.user(req , res , {});
+
+		if (q) {
+			
+			if (q.email_address) { $sq = sQuery.email_address(req , res , {}); }
+
+			if (q.identity_number) { $sq = sQuery.identity_number(req , res , {}); }
+
+			if (q.role) { $sq = sQuery.role(req , res , {}); }
+
+			else if (q.status) { $sq = sQuery.status(req , res , {}); }
+
+		}
+
 		let query = `SELECT u.user_id AS _id , u.slug , u.first_name || ' ' || u.last_name AS full_name , u.user_no AS num , u.email_address , dt.name AS department , ft.name AS faculty , ll.name AS level ,
 
 									u.identity_number , rl.word AS role , us.word AS status
@@ -44,9 +64,13 @@ module.exports = {
 
 									INNER JOIN USER_STATUS AS us ON us.user_status_id = u.status_id
 
+									${Object.values($sq.join).join(' ')}
+
+									${Object.values($sq.condition).join(' ')}
+
 									ORDER BY u.updated_on DESC
 
-									LIMIT 11
+									LIMIT 11 OFFSET ${p}
 
 								`;
 

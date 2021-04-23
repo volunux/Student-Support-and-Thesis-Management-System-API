@@ -8,7 +8,27 @@ fieldsX.forEach((item) => { if (generalOne.general[item]) delete generalOne.gene
 
 let entrySchema = joi.object().keys({ 
 
-...generalOne.general });
+...generalOne.general ,
+
+	'amount' : joi.number()
+
+							.min(1)
+
+							.max(900000000)
+
+							.required()
+
+							.label('Amount') ,
+
+	'entry_type' : joi.number()
+
+							.min(1)
+
+							.max(900000000)
+
+							.required()
+
+							.label('Payment Type') });
 
 module.exports = {
 

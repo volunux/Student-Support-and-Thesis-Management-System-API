@@ -10,13 +10,13 @@ module.exports = {
 
 										username 				VARCHAR(20) UNIQUE NOT NULL,
 										email_address 	VARCHAR(50) UNIQUE NOT NULL,
-										about 					VARCHAR(300) NOT NULL,
+										about 					VARCHAR(300) DEFAULT 'Not Available',
 										user_no 				INT UNIQUE NOT NULL,
 
 
-										matriculation_number 			VARCHAR(30) UNIQUE,
-										jamb_registration_number	VARCHAR(30) UNIQUE,
-										identity_number						VARCHAR(30) UNIQUE,
+										matriculation_number 			VARCHAR(30) UNIQUE DEFAULT 'Not Available',
+										jamb_registration_number	VARCHAR(30) UNIQUE DEFAULT 'Not Available',
+										identity_number						VARCHAR(30) UNIQUE DEFAULT 'Not Available',
 
 										last_logged_in	DATE,
 										hash						TEXT,

@@ -1,7 +1,5 @@
 let crypto = require('crypto-random-string');
 
-let nuller = require('../utility/null-checker');
-
 let queryBuilder = require('../utility/query-builder');
 
 let sQuery = require('../search/general-two/general-request-status');
@@ -100,6 +98,8 @@ module.exports = {
 
 		query += b.description ? `description , ` : '';
 
+		query += b.other_name ? `other_name , ` : '';
+
 		query += `general_request_status_no , slug , user_id , status_id ) `;
 
 		query += ` VALUES (`;
@@ -109,6 +109,8 @@ module.exports = {
 		query += b.word ? `$$${b.word}$$ , ` : '';
 
 		query += b.description ? `$$${b.description}$$ , ` : '';
+
+		query += b.other_name ? `$$${b.other_name}$$ , ` : '';
 
 		query += ` $$${c}$$ , $$${s}$$ , $$${b.author}$$ , (SELECT status_id AS _id FROM STATUS AS gs WHERE gs.word = 'Active' LIMIT 1) ) 
 
@@ -120,7 +122,7 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT grs.general_request_status_id AS _id , grs.name , grs.word , grs.updated_on , grs.description , gs.word AS status
+		let query = `SELECT grs.general_request_status_id AS _id , grs.name , grs.word , grs.slug , grs.updated_on , grs.description , grs.other_name , gs.word AS status
 
 									FROM GENERAL_REQUEST_STATUS AS grs
 
@@ -150,7 +152,7 @@ module.exports = {
 
 											'Entry' , (SELECT row_to_json(et) 
 
-																		FROM (SELECT grs.name , grs.word , grs.description , grs.slug , grs.status_id AS status
+																		FROM (SELECT grs.name , grs.word , grs.description , grs.slug , grs.other_name , grs.status_id AS status
 
 																			FROM GENERAL_REQUEST_STATUS AS grs
 
@@ -170,7 +172,7 @@ module.exports = {
 
 		let b = req.body;
 
-		let builder$ = queryBuilder.update$(b , 'general2');
+		let builder$ = queryBuilder.update$(b , 'generalRequestStatus');
 
 		let query = `UPDATE GENERAL_REQUEST_STATUS
 
@@ -264,7 +266,9 @@ module.exports = {
 
 									FROM GENERAL_REQUEST_STATUS
 
-									RETURNING name , word , slug`;
+									RETURNING name , word , slug
+
+								`;
 
 		return query;
 

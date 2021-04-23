@@ -116,7 +116,7 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT rfst.refund_stage_id AS _id , rfst.name , rfst.updated_on , rfst.description , gs.word AS status
+		let query = `SELECT rfst.refund_stage_id AS _id , rfst.name , rfst.updated_on , rfst.description , rfst.slug , gs.word AS status
 
 									FROM REFUND_STAGE AS rfst
 

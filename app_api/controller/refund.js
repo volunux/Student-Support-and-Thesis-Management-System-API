@@ -14,7 +14,7 @@ module.exports = (opts) => {
 
 	let mailMessage = require(`../mail/messages/${opts.third}`);
 
-	let mailer = require('../mail/mail');
+	let mailer = require('../mail/sendgrid');
 
 	return {
 
@@ -141,11 +141,11 @@ module.exports = (opts) => {
 
 			if (req.params && req.params.entry) {
 
-			let plan = query$.entryReview(req , res , {});
-
 			let $e = req.params.entry;
 
 			let b = req.body;
+
+			let plan = query$.entryReview(req , res , {});
 
 			db.query(plan , [$e] , (err , result) => {
 
@@ -169,11 +169,13 @@ module.exports = (opts) => {
 
 							if (result2.rowCount >= 1) { let $result2 = result2.rows[0];
 
-		 							let $entry = {'title' : mailMessage.review().title , 'text' : mailMessage.review().message };
+		 							let $entry = {'title' : mailMessage.review().title , 'message' : mailMessage.review().message };
 
-									mailer.entryReview(req , res , next , $result.author , $entry.title , $entry.text);
+									let payload = {'user' : {'email_address' : $result.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
 
-							b.text = $entry.text;
+									mailer.send(payload);
+
+							b.text = $entry.message;
 
 							let plan3 = query$.entryCommentAdd$s(req , res , {'entry' : $result });
 

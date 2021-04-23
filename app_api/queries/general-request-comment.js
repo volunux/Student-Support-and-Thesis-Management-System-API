@@ -1,7 +1,5 @@
 let crypto = require('crypto-random-string');
 
-let nuller = require('../utility/null-checker');
-
 let queryBuilder = require('../utility/query-builder');
 
 let sQuery = require('../search/general-three/general-request-comment');
@@ -223,7 +221,9 @@ module.exports = {
 
 									FROM GENERAL_REQUEST_COMMENT
 
-									RETURNING slug`;
+									RETURNING slug
+
+								`;
 
 		return query;
 

@@ -221,7 +221,9 @@ module.exports = {
 
 									FROM REFUND_COMMENT
 
-									RETURNING slug`;
+									RETURNING slug
+
+								`;
 
 		return query;
 

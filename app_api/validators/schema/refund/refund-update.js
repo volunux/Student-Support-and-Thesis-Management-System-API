@@ -2,7 +2,6 @@ let joi = require('joi');
 
 let generalOne = require('../../field/general-one');
 
-
 let entrySchema = joi.object().keys({
 
 	'text' : joi.string()

@@ -1,7 +1,5 @@
 let crypto = require('crypto-random-string');
 
-let nuller = require('../utility/null-checker');
-
 let queryBuilder = require('../utility/query-builder');
 
 let sQuery = require('../search/general-one/payment-type');
@@ -122,7 +120,7 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT pt.payment_type_id AS _id , pt.name , pt.abbreviation , pt.updated_on , pt.description , gs.word AS status
+		let query = `SELECT pt.payment_type_id AS _id , pt.name , pt.abbreviation , pt.updated_on , pt.slug , pt.description , gs.word AS status
 
 									FROM PAYMENT_TYPE AS pt
 

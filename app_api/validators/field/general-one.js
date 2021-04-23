@@ -14,6 +14,16 @@ module.exports = {
 
 							.label('Name') ,
 
+	'title' : joi.string()
+
+							.min(1)
+
+							.max(150)
+
+							.optional()
+
+							.label('Title') ,
+
 	'abbreviation' : joi.string()
 
 							.min(2)

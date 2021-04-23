@@ -32,7 +32,7 @@ module.exports = {
 
 											FROM USERS AS u 
 
-											WHERE u.user_id = grc.user_id) AS u ) AS author
+											WHERE u.user_id = ry.user_id) AS u ) AS author
 
 									FROM REPLY AS ry
 
@@ -221,7 +221,9 @@ module.exports = {
 
 									FROM REPLY
 
-									RETURNING slug`;
+									RETURNING slug
+
+								`;
 
 		return query;
 

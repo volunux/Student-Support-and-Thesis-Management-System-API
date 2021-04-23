@@ -104,6 +104,8 @@ module.exports = {
 
 		query += b.description ? `description , ` : '';
 
+		query += b.title ? `title , ` : '';
+
 		query += b.unit ? `unit_id , ` : '';
 
 		query += `request_type_no , slug , user_id , status_id ) `;
@@ -115,6 +117,8 @@ module.exports = {
 		query += b.abbreviation ? `$$${b.abbreviation}$$ , ` : '';
 
 		query += b.description ? `$$${b.description}$$ , ` : '';
+
+		query += b.title ? `$$${b.title}$$ , ` : '';
 
 		query += b.unit ? `$$${b.unit}$$ , ` : '';
 
@@ -128,7 +132,7 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT rt.request_type_id AS _id , rt.name , rt.abbreviation , rt.updated_on , rt.description , gs.word AS status , ut.name AS unit 
+		let query = `SELECT rt.request_type_id AS _id , rt.name , rt.abbreviation , rt.slug , rt.title , rt.updated_on , rt.description , gs.word AS status , ut.name AS unit 
 
 									FROM REQUEST_TYPE AS rt
 
@@ -166,7 +170,7 @@ module.exports = {
 
 											'Entry' , (SELECT row_to_json(et) 
 
-																		FROM (SELECT rt.name , rt.abbreviation , rt.description , rt.slug , rt.status_id AS status , rt.unit_id AS unit
+																		FROM (SELECT rt.name , rt.abbreviation , rt.description , rt.title , rt.slug , rt.status_id AS status , rt.unit_id AS unit
 
 																			FROM REQUEST_TYPE AS rt
 

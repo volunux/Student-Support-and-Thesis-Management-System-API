@@ -37,7 +37,6 @@ let opts = {
 };
 
 let ectrl = require('../../controller/upload')(opts);
-
 	
 router.route('/entry/create')
 

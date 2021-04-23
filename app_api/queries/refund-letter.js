@@ -103,7 +103,7 @@ module.exports = {
 
 									FROM REFUND_LETTER AS lt
 
-									WHERE lt.slug = '1219821salkz'
+									WHERE lt.slug = 'letter'
 
 									LIMIT 1
 

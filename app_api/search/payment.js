@@ -61,12 +61,11 @@ module.exports = {
 			if (req.query && req.query.faculty) { let role = req.user.role , faculty = req.query.faculty;
 
 
-
 				if (role == 'dean' || role == 'facultyPresident') { query.condition.one = ` AND gp.faculty_id = ${req.user.faculty}`; }
 
-				else if (role == 'student') { query.condition.two = ` AND gp.user_id = ${req.user._id}`; }
+				else if (role == 'student') { query.condition.one = ` AND gp.user_id = ${req.user._id}`; }
 
-				else if (role == 'hod' || role == 'departmentPresident') { query.condition.two = ` AND gp.department_id = ${req.user.department}`; }
+				else if (role == 'hod' || role == 'departmentPresident') { query.condition.one = ` AND gp.department_id = ${req.user.department}`; }
 
 				else {
 
@@ -90,7 +89,7 @@ module.exports = {
 
 				else if (role == 'dean' || role == 'facultyPresident') {
 
-					query.condition.one = ` AND gp.faculty_id = ${req.user.faculty}`; 
+					query.condition.one = ` AND gp.faculty_id = ${req.user.faculty}`;
 
 					query.condition.two = ` AND dt.name LIKE '%${dept}%'`; }
 

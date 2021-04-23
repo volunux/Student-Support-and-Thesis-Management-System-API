@@ -10,7 +10,9 @@ module.exports = (opts) => {
 
 	let query$ = require(`../queries/admin`);
 
-	let mailer = require('../mail/mail');
+	let mailMessage = require(`../mail/messages/user`);
+
+	let mailer = require('../mail/sendgrid');
 
 	let $user = require('../helper/user');
 
@@ -124,7 +126,11 @@ module.exports = (opts) => {
 
 					if (result.rowCount >= 1) { let $result = result.rows[0];
 
-						mailer.userAdd(req , res , next , b);
+		 				let $entry = {'title' : mailMessage.create2().title , 'message' : mailMessage.create2().message };
+
+						let payload = {'user' : {'email_address' : b.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+						mailer.send(payload);
 
 						return $rpd.handler(res , 200 , $result); }});
 

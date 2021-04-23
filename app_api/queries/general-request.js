@@ -188,9 +188,9 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT gr.general_request_id AS _id , gr.message , gr.application_number , gr.request_username , gr.request_password , gr.updated_on , gr.slug , 
+		let query = `SELECT gr.general_request_id AS _id , gr.message , gr.application_number , rc.username , rc.password , gr.updated_on , gr.slug , 
 
-									gr.general_request_no AS num , gr.unit_id AS unit , ut.name AS unit_name ,
+									gr.general_request_no AS num , gr.unit_id AS unit , ut.name AS unit_name , rp.password AS other_password ,
 
 									(SELECT row_to_json(u)
 
@@ -239,6 +239,10 @@ module.exports = {
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.general_request_status_id = gr.status_id
 
 									INNER JOIN UNIT AS ut ON ut.unit_id = gr.unit_id
+
+									LEFT JOIN REQUEST_CREDENTIAL AS rc ON rc.entry_id = gr.general_request_id
+
+									LEFT JOIN REQUEST_PASSWORD AS rp ON rp.entry_id = gr.general_request_id
 
 									WHERE gr.slug = $1
 
@@ -326,7 +330,7 @@ module.exports = {
 
 											WHERE u.user_id = c.user_id) AS u ) AS author ,
 
-									(SELECT json_agg(row_to_json(r))
+									(SELECT json_agg(row_to_json(ry))
 
 										FROM (SELECT text , comment_author_name , 
 
@@ -338,9 +342,9 @@ module.exports = {
 
 												WHERE u.user_id = ry.user_id) AS u ) AS author 
 
-											FROM REPLY AS ry 
+											FROM GENERAL_REQUEST_REPLY AS ry 
 
-											WHERE ry.comment_id = c.general_request_comment_id) AS r ) AS replies
+											WHERE ry.comment_id = c.general_request_comment_id) AS ry ) AS replies
 
 											FROM GENERAL_REQUEST_COMMENT AS c WHERE c.entry_id = gr.general_request_id) AS c ) AS timeline
 
@@ -399,7 +403,7 @@ module.exports = {
 
 		let query = `INSERT
 
-									INTO REPLY(text , comment_author_name , slug , reply_no , entry_id , comment_id , user_id , status_id)
+									INTO GENERAL_REQUEST_REPLY(text , comment_author_name , slug , reply_no , entry_id , comment_id , user_id , status_id)
 
 									SELECT $$${b.text}$$ , $$${b.comment_author_name}$$ , $$${s}$$ , $$${c}$$ , $$${opts.entry._id}$$ , $$${opts.comment._id}$$ , $$${b.author}$$ , s.status_id
 
@@ -446,15 +450,9 @@ module.exports = {
 
 		let b = req.body;
 
-		let query2 = ``;
-
-		query2 += b.request_username ? ` , request_username = $$${b.request_username}$$` : '';
-
-		query2 += b.request_password ? ` , request_password = $$${b.request_password}$$` : ''; 
-
 		let query = `UPDATE GENERAL_REQUEST AS gr
 
-									SET status_id = $$${b.status}$$ , handler_id = $$${b.author}$$ ${query2}
+									SET status_id = $$${b.status}$$ , handler_id = $$${b.author}$$
 
 									FROM GENERAL_REQUEST_STATUS AS grs 
 
@@ -692,7 +690,7 @@ module.exports = {
 
 		let query = `SELECT grc.general_request_comment_id AS _id , grc.slug , grc.status_id AS status_id , s.word AS status ,
 
-									(SELECT json_agg(row_to_json(r)) FROM (select slug FROM REPLY AS r WHERE r.comment_id = grc.general_request_comment_id LIMIT 2) AS r) AS replies
+									(SELECT json_agg(row_to_json(r)) FROM (select slug FROM GENERAL_REQUEST_REPLY AS r WHERE r.comment_id = grc.general_request_comment_id LIMIT 2) AS r) AS replies
 
 									FROM GENERAL_REQUEST_COMMENT AS grc
 

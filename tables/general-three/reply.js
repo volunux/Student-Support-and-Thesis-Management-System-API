@@ -7,7 +7,7 @@ module.exports = {
 										reply_id 												SERIAL NOT NULL,
 										text 														VARCHAR(500) NOT NULL,
 
-										comment_author_name							VARCHAR(150) NOT NULL,
+										comment_author_name							VARCHAR(150) NOT NULL DEFAULT 'Anonymous',
 
 										created_on 											DATE NOT NULL DEFAULT CURRENT_DATE,
 										updated_on 											DATE NOT NULL DEFAULT CURRENT_DATE,

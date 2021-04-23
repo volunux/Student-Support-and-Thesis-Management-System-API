@@ -12,7 +12,7 @@ module.exports = (opts) => {
 
 	let mailMessage = require(`../mail/messages/${opts.third}`);
 
-	let mailer = require('../mail/mail');
+	let mailer = require('../mail/sendgrid');
 
 	let refundUpdateCol = require('./refund-update');
 
@@ -97,7 +97,9 @@ module.exports = (opts) => {
 
 															let $entry = mailMessage.rejected(req , res , next);
 
-															mailer.entryRejected(req , res , next , $result.author , $entry.title , $entry.message);	
+															let payload = {'user' : {'email_address' : $result.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+															mailer.send(payload);
 
 														let plan_comment = query$.entryCommentAdd$(req , res , {'entry' : $result });
 
@@ -155,7 +157,9 @@ module.exports = (opts) => {
 
 															let $entry = mailMessage.rejected(req , res , next);
 
-															mailer.entryRejected(req , res , next , $result.author , $entry.title , $entry.message);
+															let payload = {'user' : {'email_address' : $result.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+															mailer.send(payload);
 
 														let plan_comment = query$.entryCommentAdd$(req , res , {'entry' : $result });
 
@@ -330,7 +334,9 @@ module.exports = (opts) => {
 
 														let $entry = mailMessage.rejected(req , res , next);
 
-														mailer.entryRejected(req , res , next , $result.author , $entry.title , $entry.message);
+														let payload = {'user' : {'email_address' : $result.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+														mailer.send(payload);
 
 										let plan_comment = query$.entryCommentAdd$(req , res , {'entry' : $result });
 
@@ -360,13 +366,17 @@ module.exports = (opts) => {
 
 															let $entry = mailMessage.fulfilled(req , res , next);
 
-															mailer.entryFulfilled(req , res , next , $result.author , $entry.title , $entry.message);	}
+															let payload = {'user' : {'email_address' : $result.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+															mailer.send(payload); }
 
 													if ($result.status == 'Rejected') { 
 
 															let $entry = mailMessage.rejected(req , res , next);
 
-															mailer.entryRejected(req , res , next , $result.author , $entry.title , $entry.message); }
+															let payload = {'user' : {'email_address' : $result.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+															mailer.send(payload);	}
 
 										let plan_comment = query$.entryCommentAdd$(req , res , {'entry' : $result });
 

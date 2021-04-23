@@ -8,7 +8,7 @@ module.exports = {
 										name													VARCHAR(150) NOT NULL,
 										word													VARCHAR(20) NOT NULL,
 										description										VARCHAR(250) DEFAULT 'Not Available',
-										other_name										VARCHAR(20),
+										other_name										VARCHAR(20) DEFAULT 'Not Available',
 
 										created_on										DATE NOT NULL DEFAULT CURRENT_DATE,
 										updated_on										DATE NOT NULL DEFAULT CURRENT_DATE,

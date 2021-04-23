@@ -6,6 +6,8 @@ class UserSignatureRepository {
 
 		let b = req.body;
 
+		let q = req.query;
+
 		let p = +(q.page) > 0 ? (+(q.page) - 1) * 10 : 0;
 
 		let query = `SELECT usig.user_signature_id AS _id , usig.user_signature_no AS num , usig.updated_on , s.word AS status ,

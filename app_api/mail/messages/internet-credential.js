@@ -22,11 +22,11 @@ module.exports = {
 
 	'fulfilled' : (req , res , next , opts) => {
 
-				return { 'message' : `Your Internet Credentials includes;
+				return { 'message' : `Your Internet Credentials includes; <br/>
 							
-							Username: ${opts.cred.username}
+							Username: ${opts.cred.username} <br/>
 
-							Password: ${opts.cred.password}
+							Password: ${opts.cred.password} <br/>
 							
 							Thank you for using our services.` ,
 

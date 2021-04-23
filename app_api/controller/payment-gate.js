@@ -12,7 +12,7 @@ module.exports = (opts) => {
 
 	let mailMessage = require(`../mail/messages/payment`);
 
-	let mailer = require('../mail/mail');
+	let mailer = require('../mail/sendgrid');
 
 	let mySecretKey = process.env.paystack;
 
@@ -68,17 +68,17 @@ module.exports = (opts) => {
 
 					let $s = b.payment_session;
 
-					let plan4 = query$.proceedEntryCreate$3(req , res , {'entry' : pResult.data});
+					let plan3 = query$.proceedEntryCreate$3(req , res , {'entry' : pResult.data});
 
-					db.query(plan4, [$p , $s] , (err , result4) => {
+					db.query(plan3, [$p , $s] , (err , result3) => {
 
 							if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.word} entry. Please try again.`}); }
 
-							if (result4.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `${opts.word} entry does not exists in the record or is not available.`});	}
+							if (result3.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `${opts.word} entry does not exists in the record or is not available.`});	}
 
-							if (result4.rowCount >= 1) { let $result4 = pResult.data;
+							if (result3.rowCount >= 1) { let $result3 = pResult.data;
 
-								return $rpd.handler(res , 200 , $result4); } }); })
+								return $rpd.handler(res , 200 , $result3); } }); })
 			
 						.catch((err) => {
 
@@ -124,7 +124,9 @@ module.exports = (opts) => {
 
 								let $entry = mailMessage.fulfilled(req , res , next , $result1);
 
-								mailer.entryFulfilled(req , res , next , {'email_address' : $result1.email_address} , $entry.title , $entry.message);
+								let payload = {'user' : {'email_address' : $result1.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+								mailer.send(payload);
 
 							return $rpd.handler(res , 200 , $result1); } }); }
 
@@ -142,7 +144,9 @@ module.exports = (opts) => {
 
 								let $entry = mailMessage.rejected(req , res , next , $result1);
 
-								mailer.entryRejected(req , res , next , {'email_address' : $result1.email_address} , $entry.title , $entry.message);
+								let payload = {'user' : {'email_address' : $result1.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+								mailer.send(payload);
 
 							return $rpd.handler(res , 200 , $result1); } }); }
 
@@ -156,7 +160,7 @@ module.exports = (opts) => {
 
 					return $rpd.handler(res , 404 , {'message' : 'Transaction reference cannot be found. Please check the reference string and try again.'}); }
 
-					if (payVerificationCount < 3) { payVerificationCount++
+					if (payVerificationCount < 3) { payVerificationCount++;
 
 						payment.verifyTransaction(req , res , next); }
 

@@ -130,6 +130,8 @@ module.exports = (opts) => {
 
 					if (result.rowCount >= 1) { let $result = result.rows[0].result;
 
+					if (!$result.Entry) { return $rpd.handler(res , 404 , {'message' : `${opts.word} entry does not exists in the record or is not available.`}); }
+
 						return $rpd.handler(res , 200 , $result);	}	});	}
 
 			else { return $rpd.handler(res , 404 , {'message' : `No ${opts.word} id provided. Please provide a valid ${opts.word} id.`});	}

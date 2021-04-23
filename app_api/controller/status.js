@@ -40,7 +40,7 @@ module.exports = (opts) => {
 
 						return $rpd.handler(res , 200 , $result ); }	}); }
 
-			else { return $rpd.handler(res , 404 , {'message' : `No ${opt.second} id provided. Please provide a valid ${opt.second} id.`});	}
+			else { return $rpd.handler(res , 404 , {'message' : `No ${opts.second} id provided. Please provide a valid ${opt.second} id.`});	}
 
 		} ,
 

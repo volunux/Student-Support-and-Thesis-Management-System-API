@@ -36,19 +36,7 @@ module.exports = {
 
 		query += b.username ? `username , ` : '';
 
-		query += b.about ? `about , ` : '';
-
-		query += b.matriculation_number ? `matriculation_number , ` : '';
-
-		query += b.jamb_registration_number ? `jamb_registration_number , ` : '';
-
-		query += b.identity_number ? `identity_number , ` : '';
-
-		query += b.department ? `department_id , ` : '';
-
-		query += b.faculty ? `faculty_id , ` : '';
-
-		query += `user_no , slug , hash , salt , 
+		query += `user_no , slug , hash , salt , faculty_id , department_id ,
 
 							role_id , unit_id , country_id , level_id , status_id) `;
 
@@ -62,19 +50,11 @@ module.exports = {
 
 		query += b.username ? `$$${b.username}$$ , ` : '';
 
-		query += b.about ? `$$${b.about}$$ , ` : '';
-
-		query += b.matriculation_number ? `$$${b.matriculation_number}$$ , ` : '';
-
-		query += b.jamb_registration_number ? `$$${b.jamb_registration_number}$$ , ` : '';
-
-		query += b.identity_number ? `$$${b.identity_number}$$ , ` : '';
-
-		query += b.department ? `$$${b.department}$$ , ` : '';
-
-		query += b.faculty ? `$$${b.faculty}$$ , ` : '';
-
 		query += ` $$${c}$$ , $$${s}$$ , $$${opts.sec.hash}$$ , $$${opts.sec.salt}$$ , 
+
+							(SELECT faculty_id AS _id FROM FACULTY AS ft WHERE ft.faculty_id = 1 LIMIT 1) ,
+
+							(SELECT department_id AS _id FROM DEPARTMENT AS dt WHERE dt.department_id = 1 LIMIT 1) ,
 
 							(SELECT role_id AS _id FROM ROLE AS rl WHERE rl.word = 'Student' LIMIT 1) ,
 
@@ -86,7 +66,8 @@ module.exports = {
 
 							(SELECT status_id AS _id FROM STATUS AS gs WHERE gs.word = 'Active' LIMIT 1) ) 
 
-							RETURNING user_id AS _id , email_address , username , 'student' AS role , ${b.department} AS department , ${b.faculty} AS faculty , 'pending' AS status`;
+							RETURNING user_id AS _id , email_address , username , 'student' AS role , department_id AS department , faculty_id AS faculty , unit_id AS unit , 'pending' AS status`;
+
 
 		return query;
 
@@ -126,7 +107,9 @@ module.exports = {
 
 		let query = `SELECT country_id AS _id , name
 
-									FROM COUNTRY`;
+									FROM COUNTRY
+
+									LIMIT 1`;
 
 		return query;
 	

@@ -20,13 +20,15 @@ module.exports = {
 
 	'entryforgotPassword$s' : (req , res , opts) => {
 
-		let passwordTime = (Date.now() + 3600000);
+		let passwordTime = (Date.now() + 9600000);
 
 		let query = `UPDATE USERS AS u
 
 									SET reset_password_token = $1 , reset_password_expires = $$${passwordTime}$$
 
 									FROM USER_STATUS AS us
+
+									WHERE u.email_address = $2
 
 									RETURNING u.email_address , u.user_id AS _id
 
@@ -54,7 +56,7 @@ module.exports = {
 
 	'resetPassword$' : (req , res , opts) => {
 
-		let query = `SELECT u.user_id AS _id
+		let query = `SELECT u.user_id AS _id , u.email_address
 
 									FROM USERS AS u
 
@@ -72,7 +74,9 @@ module.exports = {
 
 		let query = `UPDATE USERS AS u
 
-									SET reset_password_token = null , reset_password_expires = null , hash = $$${opts.pass.hash}$$ , salt = $$${opts.pass.salt}
+									SET reset_password_token = null , reset_password_expires = null , hash = $$${opts.pass.hash}$$ , salt = $$${opts.pass.salt}$$
+
+									WHERE u.email_address = $1
 
 									RETURNING u.email_address , u.user_id AS _id
 

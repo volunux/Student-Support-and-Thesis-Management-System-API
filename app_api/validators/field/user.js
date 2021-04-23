@@ -60,7 +60,7 @@ module.exports = {
 
 							.max(300)
 
-							.required()
+							.optional()
 
 							.label('About') ,
 
@@ -70,7 +70,7 @@ module.exports = {
 
 							.max(900000000)
 
-							.required()
+							.optional()
 
 							.label('Department') , 
 
@@ -80,7 +80,7 @@ module.exports = {
 
 							.max(900000000)
 
-							.required()
+							.optional()
 
 							.label('Faculty') ,
 
@@ -90,7 +90,7 @@ module.exports = {
 
 							.max(900000000)
 
-							.required()
+							.optional()
 
 							.label('Country') ,
 
@@ -100,7 +100,7 @@ module.exports = {
 
 							.max(900000000)
 
-							.required()
+							.optional()
 
 							.label('Level') 
 

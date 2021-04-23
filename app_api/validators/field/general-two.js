@@ -34,6 +34,26 @@ module.exports = {
 
 							.label('Word') ,
 
+	'other_name' : joi.string()
+
+							.min(1)
+
+							.max(20)
+
+							.optional()
+
+							.label('Other Name') ,
+
+	'title' : joi.string()
+
+							.min(1)
+
+							.max(150)
+
+							.optional()
+
+							.label('Title') ,
+
 		}
 
 }

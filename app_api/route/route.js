@@ -24,7 +24,6 @@ let refundStage = require('./general-one/refund-stage');
 let requestType = require('./general-one/request-type');
 let paymentType = require('./general-one/payment-type');
 let paymentSession = require('./general-one/payment-session');
-let requestMessageTemplate = require('./general-one/request-message-template');
 
 /** General One Routes **/
 
@@ -41,6 +40,7 @@ let userRole = require('./general-two/user-role');
 /** General Three Routes **/
 
 let generalRequestComment = require('./general-three/general-request-comment');
+let accountChangeRequestComment = require('./general-three/account-change-request-comment');
 let refundComment = require('./general-three/refund-comment');
 let refundSignature = require('./general-three/refund-signature');
 let reply = require('./general-three/reply');
@@ -60,6 +60,15 @@ let userSignature = require('./general-four/user-signature');
 
 /** General Four Routes **/
 
+/** General Five Routes **/
+
+let accountChangeMessageTemplate = require('./general-five/account-change-message-template');
+let accountChangeMessageTemplateType = require('./general-five/account-change-message-template-type');
+let requestChangeMessageTemplate = require('./general-five/request-change-message-template');
+let requestChangeMessageTemplateType = require('./general-five/request-change-message-template-type');
+
+/** General Five Routes **/
+
 /** Common Routes **/
 
 let statistic = require('./statistic');
@@ -68,6 +77,8 @@ let user = require('./common/user');
 let payment = require('./common/payment');
 let generalRequest = require('./common/general-request');
 let refund = require('./common/refund');
+let accountChangeRequest = require('./common/account-change-request');
+let miscRequest = require('./common/misc-request');
 
 /** Common Routes **/
 
@@ -109,6 +120,7 @@ module.exports = (app) => {
 /** General Three Routes **/
 
 		app.use('/api/general-request-comment' , cUser.roleType([...privilege.sPrivilege]) , generalRequestComment);
+		app.use('/api/account-change-request-comment' , cUser.roleType([...privilege.sPrivilege]) , accountChangeRequestComment);
 		app.use('/api/refund-comment' , cUser.roleType([...privilege.sPrivilege]) , refundComment);
 		app.use('/api/refund-signature' , cUser.roleType([...privilege.sPrivilege]) , refundSignature);
 		app.use('/api/reply' , cUser.roleType([...privilege.sPrivilege]) , reply);
@@ -127,6 +139,15 @@ module.exports = (app) => {
 
 /** General Four Routes **/
 
+/** General Five Routes **/
+
+		app.use('/api/account-change-message-template' , cUser.roleType(['superAdministrator']) , accountChangeMessageTemplate);
+		app.use('/api/account-change-message-template-type' , cUser.roleType(['superAdministrator']) , accountChangeMessageTemplateType);
+		app.use('/api/request-change-message-template' , cUser.roleType([...privilege.template]) , requestChangeMessageTemplate);
+		app.use('/api/request-change-message-template-type' , cUser.roleType([...privilege.sPrivilege]) , requestChangeMessageTemplateType);
+
+/** General Five Routes **/
+
 /** Common Routes **/
 
 		app.use('/api/admin' , cUser.roleType(privilege.sPrivilege.slice(1)) , admin);
@@ -135,7 +156,8 @@ module.exports = (app) => {
 		app.use('/api/general-payment' , payment);
 		app.use('/api/general-request' , generalRequest);
 		app.use('/api/refund' , refund);
-		app.use('/api/request-message-template' , requestMessageTemplate );
+		app.use('/api/account-change-request' , accountChangeRequest);
+		app.use('/api/misc-request' , miscRequest);
 
 /** Common Routes **/
 

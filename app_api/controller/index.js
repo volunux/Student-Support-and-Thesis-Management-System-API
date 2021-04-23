@@ -12,7 +12,9 @@ module.exports = (opts) => {
 
 	let query$ = require(`../queries/index`);
 
-	let mailer = require('../mail/mail');
+	let mailMessage = require(`../mail/messages/user`);
+
+	let mailer = require('../mail/sendgrid');
 
 	return {
 
@@ -42,7 +44,7 @@ module.exports = (opts) => {
 
 					let plan2 = query$.entryforgotPassword$s(req , res , {});
 
-					db.query(plan2 , [$t] , (err , result2) => {
+					db.query(plan2 , [$t , $e] , (err , result2) => {
 
 					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.word} entry. Please try again.`}); }
 
@@ -52,7 +54,11 @@ module.exports = (opts) => {
 
 							done(err , token , $result);	}	});	}	}); } ,
 
-				(token , user , done) => { mailer.forgotPassword(req , res , next , token , user , done);	
+				(token , user , done) => { let $entry = mailMessage.forgotPassword(req , res , next , token);
+
+									let payload = {'user' : {'email_address' : user.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+									mailer.send(payload);
 
 					done(null , user); } ] ,
 
@@ -77,33 +83,37 @@ module.exports = (opts) => {
 
 					if (result.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `Password reset token is invalid or has expired. Kindly request for another password reset token.`});	}
 
-					if (result.rowCount >= 1) { return $rpd.handler(res , 200 , {'message' : `${opt.second} password reset token successfully retrieved.`} ); }	}); }
+					if (result.rowCount >= 1) { return $rpd.handler(res , 200 , {'message' : `${opts.second} password reset token successfully retrieved.`} ); }	}); }
 
 			else { return $rpd.handler(res , 404 , {'message' : `No ${opts.word} id provided. Please provide a valid ${opts.word} id.`});	}
 
 		} ,
 
-		'resetPassword$' : (req , res , next) => { let token = req.params.token;
+		'resetPassword$' : (req , res , next) => { let $t = req.params.token;
 
 				async.waterfall([
 						
 					(done) => {
 
+			let b = req.body;
+
 			let plan = query$.resetPassword$(req , res , {});
 
-			db.query(plan , [] , (err , result) => {
+			db.query(plan , [$t] , (err , result) => {
 
 					if (err) { done(err , result.rows[0]); }
 
 					if (result.rowCount < 1) { return $rpd.handler(res , 404 , {'message' : `Password reset token is invalid or has expired. Kindly request request for another password reset token.`});	}
 
-					if (result.rowCount >= 1) { let $result = result.rows[0].result;
+					if (result.rowCount >= 1) { let $result = result.rows[0];
 
-					let $pass = $user.setPassword(req.body);
+					let $e = $result.email_address;
+
+					let $pass = $user.setPassword(b.new_password);
 
 					let plan2 = query$.resetPassword$s(req , res , {'pass' : $pass});
 
-					db.query(plan2 , [] , (err , result2) => {
+					db.query(plan2 , [$e] , (err , result2) => {
 
 					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.word} entry. Please try again.`}); }
 
@@ -111,9 +121,13 @@ module.exports = (opts) => {
 
 					if (result2.rowCount >= 1) { let $result2 = result2.rows[0];
 
-							done(err , token , $result);	}	});	}	}); } ,
+							done(err , $result2);	}	});	}	}); } ,
 					
-					(user , done) => { mailer.successfulReset(req , res , next , user , done);	
+					(user , done) => { let $entry = mailMessage.successfulReset(req , res , next , user);
+
+									let payload = {'user' : {'email_address' : user.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+									mailer.send(payload);
 
 						done(null , user); } ] ,
 

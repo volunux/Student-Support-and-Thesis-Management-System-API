@@ -1,7 +1,5 @@
 let crypto = require('crypto-random-string');
 
-let nuller = require('../utility/null-checker');
-
 let queryBuilder = require('../utility/query-builder');
 
 let sQuery = require('../search/general-one/unit');
@@ -122,7 +120,7 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT ut.unit_id AS _id , ut.name , ut.abbreviation , ut.updated_on , ut.description , gs.word AS status
+		let query = `SELECT ut.unit_id AS _id , ut.name , ut.abbreviation , ut.updated_on , ut.slug , ut.description , gs.word AS status
 
 									FROM UNIT AS ut
 

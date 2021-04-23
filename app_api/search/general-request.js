@@ -8,6 +8,10 @@ let privilege = {
 
 };
 
+const { v4 : uuidv4 } = require('uuid');
+
+let uuidValidator = require('../helper/uuid-validator');
+
 module.exports = {
 
 		'user' : (req , res , opts) => {
@@ -50,7 +54,11 @@ module.exports = {
 
 			'condition' : {'one' : '' , 'two' : '' , 'three' : '' , 'four' : ''}};
 
-			if (req.query && req.query.application_number) { query.condition.one = ` AND gr.application_number = '${req.query.application_number}'`;
+			if (req.query && req.query.application_number) { let role = req.user.role , appNumber = req.query.application_number;
+
+				if (uuidValidator.validate(appNumber)) { query.condition.one = ` AND gr.application_number = '${appNumber}'`; }
+
+				else { query.condition.one = ` AND gr.application_number = '${uuidv4()}'`; }
 
 
 				if (privilege.normal.indexOf(req.user.role) > -1) { query.condition.two = ` AND gr.user_id = ${req.user._id}`; }

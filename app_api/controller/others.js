@@ -36,7 +36,9 @@ module.exports = (opts) => {
 
 			let plan = query$.messageTemplate$(req , res , {});
 
-			db.query(plan , [] , (err , result) => {
+			let $u = req.user._id;
+
+			db.query(plan , [$u] , (err , result) => {
 
 					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.word} entries from record. Please try again.`}); }
 

@@ -53,11 +53,11 @@ module.exports = {
 
 									(SELECT row_to_json(u)
 
-										FROM (SELECT u.user_id AS _id , u.first_name || ' ' || u.last_name AS full_name , l.name AS level
+										FROM (SELECT u.user_id AS _id , u.first_name || ' ' || u.last_name AS full_name , ll.name AS level
 
 											FROM USERS AS u
 
-											INNER JOIN LEVEL AS l ON l.level_id = u.level_id
+											INNER JOIN LEVEL AS ll ON ll.level_id = u.level_id
 
 											WHERE u.user_id = rf.user_id) AS u ) AS author ,
 
@@ -99,8 +99,6 @@ module.exports = {
 
 		let b = req.body;
 
-		let u = {'department' : 1 , 'faculty' : 1};
-
 		let c = +(crypto({'length' : 9 , 'type' : 'numeric'}));
 
 		let s = (crypto({'length' : 29 , 'type' : 'alphanumeric'})).toLowerCase();
@@ -109,7 +107,7 @@ module.exports = {
 
 									REFUND (message , refund_no , slug , application_number , user_id , department_id , faculty_id , status_id)
 
-									SELECT $$${b.message}$$ , ${c} , $$${s}$$ , $$${uuidv4()}$$ , ${b.author} , ${u.department} , ${u.faculty} , grs.general_request_status_id
+									SELECT $$${b.message}$$ , ${c} , $$${s}$$ , $$${uuidv4()}$$ , ${b.author} , ${b.department} , ${b.faculty} , grs.general_request_status_id
 
 									FROM GENERAL_REQUEST_STATUS AS grs
 
@@ -263,6 +261,8 @@ module.exports = {
 
 	'entryTimeline' : (req , res , opts) => {
 
+		// I have to come back because I am not satisfied.
+
 		let b = req.body;
 
 		let query = `SELECT rf.refund_id AS _id , rf.application_number , rf.message , rf.slug , rf.department_id AS department , rf.faculty_id AS faculty , grs.word AS status ,
@@ -275,13 +275,35 @@ module.exports = {
 
 										FROM (SELECT hl.email_address , hl.user_id AS _id FROM USERS AS hl WHERE hl.user_id = rf.handler_id) AS hl ) AS entry_handler ,
 
-									(SELECT json_agg(row_to_json(rc))
+									(SELECT json_agg(row_to_json(c))
 
-										FROM (SELECT text , updated_on , slug , user_id AS author 
+										FROM (SELECT text , slug , updated_on , user_id AS author , 
 
-											FROM REFUND_COMMENT AS rc
+									(SELECT row_to_json(u)
 
-											WHERE rc.entry_id = rf.refund_id) AS rc ) AS timeline
+										FROM (SELECT u.first_name || ' ' || u.last_name AS full_name , u.user_id AS _id 
+
+											FROM USERS AS u 
+
+											WHERE u.user_id = rc.user_id) AS u ) AS author ,
+
+									(SELECT json_agg(row_to_json(ry))
+
+										FROM (SELECT text , comment_author_name , 
+
+									(SELECT row_to_json(u)
+
+										FROM (SELECT u.first_name || ' ' || u.last_name AS full_name , u.user_id AS _id 
+
+											FROM USERS AS u 
+
+												WHERE u.user_id = ry.user_id) AS u ) AS author 
+
+											FROM REFUND_REPLY AS ry 
+
+											WHERE ry.comment_id = rc.refund_comment_id) AS ry ) AS replies
+
+											FROM REFUND_COMMENT AS rc WHERE rc.entry_id = rf.refund_id) AS c ) AS timeline
 
 									FROM REFUND AS rf
 
@@ -335,7 +357,7 @@ module.exports = {
 
 		let query = `INSERT
 
-									INTO REPLY(text , comment_author_name , slug , reply_no , entry_id , comment_id , user_id , status_id)
+									INTO REFUND_REPLY(text , comment_author_name , slug , reply_no , entry_id , comment_id , user_id , status_id)
 
 									SELECT $$${b.text}$$ , $$${b.comment_author_name}$$ , $$${s}$$ , $$${c}$$ , $$${opts.entry._id}$$ , $$${opts.comment._id}$$ , $$${b.author}$$ , s.status_id
 
@@ -533,7 +555,7 @@ module.exports = {
 
 		let query = `SELECT rfc.refund_comment_id AS _id , rfc.slug , rfc.status_id AS status_id , s.word AS status ,
 
-									(SELECT json_agg(row_to_json(r)) FROM (SELECT slug FROM REPLY AS r WHERE r.comment_id = rfc.refund_comment_id LIMIT 2) AS r) AS replies
+									(SELECT json_agg(row_to_json(r)) FROM (SELECT slug FROM REFUND_REPLY AS r WHERE r.comment_id = rfc.refund_comment_id LIMIT 2) AS r) AS replies
 
 									FROM REFUND_COMMENT AS rfc
 

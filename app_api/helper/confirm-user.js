@@ -127,6 +127,32 @@ module.exports = {
 				if (cb && !tHappen) { return cb(req , res , next , eResult); }
 		} ,
 
+		'$isOwnerAccountChangeRequest' : (req , res , next , eResult , tHappen , nPrivilege , sPrivilege , lPrivilege , cb) => {
+
+			let author = typeof eResult.author == 'number' || typeof eResult.author == 'string' ? eResult.author : eResult.author instanceof Object && eResult.author._id ? eResult.author._id : 28218;
+
+				if (author != req.user._id && req.user.role != 'superAdministrator') {
+
+						if (tHappen) { tHappen.run = false; }
+
+						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`}); }
+
+				if (cb && !tHappen) { return cb(req , res , next , eResult); }
+		} ,
+
+		'$isOwnerMiscRequest' : (req , res , next , eResult , tHappen , nPrivilege , sPrivilege , lPrivilege , cb) => {
+
+			let author = typeof eResult.author == 'number' || typeof eResult.author == 'string' ? eResult.author : eResult.author instanceof Object && eResult.author._id ? eResult.author._id : 28218;
+
+				if (author != req.user._id && nPrivilege.indexOf(req.user.role) > -1) {
+
+						if (tHappen) { tHappen.run = false; }
+
+						return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden access, operation will not be allowed.`}); }
+
+				if (cb && !tHappen) { return cb(req , res , next , eResult); }
+		} ,
+
 		'$isOwnerPayment' : (req , res , next , eResult , tHappen , nPrivilege , lPrivilege , cb) => {
 
 			let author = typeof eResult.author == 'number' || typeof eResult.author == 'string' ? eResult.author : eResult.author instanceof Object && eResult.author._id ? eResult.author._id : 78218;

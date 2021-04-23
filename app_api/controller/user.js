@@ -12,7 +12,9 @@ module.exports = (opts) => {
 
 	let query$ = require(`../queries/${opts.query}`);
 
-	let mailer = require('../mail/mail');
+	let mailMessage = require(`../mail/messages/user`);
+
+	let mailer = require('../mail/sendgrid');
 
 	let $object = require('../helper/object');
 
@@ -260,7 +262,11 @@ module.exports = (opts) => {
 
 					if (result2.rowCount >= 1) { let $result2 = result2.rows[0];
 
-							mailer.passwordUpdate(req , res , next , $result);
+							let $entry = mailMessage.passwordUpdate(req , res , next);
+
+							let payload = {'user' : {'email_address' : $result.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+							mailer.send(payload);
 
 							return $rpd.handler(res , 201 , $result2);	}	});	}	});	}			
 

@@ -10,6 +10,10 @@ const privilege = {
 
 };
 
+const { v4 : uuidv4 } = require('uuid');
+
+let uuidValidator = require('../helper/uuid-validator');
+
 module.exports = {
 
 		'user' : (req , res , opts) => {
@@ -38,14 +42,16 @@ module.exports = {
 
 			if (req.query && req.query.application_number) { let role = req.user.role , appNumber = req.query.application_number;
 
-				query.condition.two = ` AND rf.application_number = $$${appNumber}$$`;
+				if (uuidValidator.validate(appNumber)) { query.condition.one = ` WHERE rf.application_number = '${appNumber}'`; }
+
+				else { query.condition.one = ` WHERE rf.application_number = '${uuidv4()}'`; }
 
 
-				if (role == 'dean') { query.condition.one = `WHERE rf.faculty_id = $$${req.user.faculty}$$`; }
+				if (role == 'dean') { query.condition.two = `AND rf.faculty_id = $$${req.user.faculty}$$`; }
 
-				else if (role == 'hod') { query.condition.one = `WHERE rf.department_id = $$${req.user.department}$$`; }
+				else if (role == 'hod') { query.condition.two = `AND rf.department_id = $$${req.user.department}$$`; }
 
-				else if (role == 'student') { query.condition.one = `WHERE rf.user_id = $$${req.user._id}$$`; }	
+				else if (role == 'student') { query.condition.two = `AND rf.user_id = $$${req.user._id}$$`; }	
 
 			}
 
@@ -82,11 +88,9 @@ module.exports = {
 
 			if (req.query && req.query.faculty) { let role = req.user.role , faculty = req.query.faculty;
 
-
-
 				if (role == 'dean' || role == 'hod') { query.condition.one = ` WHERE rf.faculty_id = $$${req.user.faculty}$$`; }
 
-				else if (role == 'student') { query.condition.two = ` AND rf.user_id = $$${req.user._id}$$`; }
+				else if (role == 'student') { query.condition.one = ` WHERE rf.user_id = $$${req.user._id}$$`; }
 
 				else { 
 
@@ -116,7 +120,7 @@ module.exports = {
 
 					query.condition.one = ` WHERE rf.faculty_id = $$${req.user.faculty}$$`; 
 
-					query.condition.two = ` AND dt.name LIKE '%${dept}%'`;; }
+					query.condition.two = ` AND dt.name LIKE '%${dept}%'`; }
 
 				else if (role == 'student') { query.condition.one = ` WHERE rf.user_id = $$${req.user._id}$$`; }
 
@@ -124,7 +128,7 @@ module.exports = {
 
 					query.join.one = `INNER JOIN DEPARTMENT AS dt ON dt.department_id = rf.department_id`;
 
-					query.condition.one = ` AND dt.name LIKE '%${dept}%'`; }
+					query.condition.one = ` WHERE dt.name LIKE '%${dept}%'`; }
 
 			}
 

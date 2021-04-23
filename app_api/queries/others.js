@@ -14,9 +14,11 @@ module.exports = {
 
 	'messageTemplate$' : (req , res , opts) => {
 
-		let query = `SELECT request_message_template_id AS _id , title
+		let query = `SELECT rcmt_id AS _id , title
 
-									FROM REQUEST_MESSAGE_TEMPLATE
+									FROM REQUEST_CHANGE_MESSAGE_TEMPLATE AS rcmt
+
+									WHERE rcmt.user_id = $1
 
 								`;
 
@@ -28,9 +30,9 @@ module.exports = {
 
 		let query = `SELECT body
 
-									FROM REQUEST_MESSAGE_TEMPLATE
+									FROM REQUEST_CHANGE_MESSAGE_TEMPLATE
 
-									WHERE request_message_template_id = $1
+									WHERE rcmt_id = $1
 
 								`;
 

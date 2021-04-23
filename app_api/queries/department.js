@@ -1,7 +1,5 @@
 let crypto = require('crypto-random-string');
 
-let nuller = require('../utility/null-checker');
-
 let queryBuilder = require('../utility/query-builder');
 
 let sQuery = require('../search/general-one/department');
@@ -128,7 +126,7 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT dt.department_id AS _id , dt.name , dt.abbreviation , dt.updated_on , dt.description , gs.word AS status , ft.name AS faculty 
+		let query = `SELECT dt.department_id AS _id , dt.name , dt.abbreviation , dt.slug , dt.updated_on , dt.description , gs.word AS status , ft.name AS faculty 
 
 									FROM DEPARTMENT AS dt
 
@@ -280,7 +278,9 @@ module.exports = {
 
 									FROM DEPARTMENT
 
-									RETURNING name , abbreviation , slug`;
+									RETURNING name , abbreviation , slug
+
+								`;
 
 		return query;
 

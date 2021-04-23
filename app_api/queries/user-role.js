@@ -1,7 +1,5 @@
 let crypto = require('crypto-random-string');
 
-let nuller = require('../utility/null-checker');
-
 let queryBuilder = require('../utility/query-builder');
 
 let sQuery = require('../search/general-two/user-role');
@@ -120,7 +118,7 @@ module.exports = {
 
 	'entryDetail' : (req , res , opts) => {
 
-		let query = `SELECT rl.role_id AS _id , rl.name , rl.word , rl.updated_on , rl.description , gs.word AS status
+		let query = `SELECT rl.role_id AS _id , rl.name , rl.word , rl.slug , rl.updated_on , rl.description , gs.word AS status
 
 									FROM ROLE AS rl
 
@@ -264,7 +262,9 @@ module.exports = {
 
 									FROM ROLE
 
-									RETURNING name , word , slug`;
+									RETURNING name , word , slug
+
+								`;
 
 		return query;
 

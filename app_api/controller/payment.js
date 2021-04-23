@@ -10,7 +10,7 @@ module.exports = (opts) => {
 
 	let mailMessage = require(`../mail/messages/${opts.third}`);
 
-	let mailer = require('../mail/mail');
+	let mailer = require('../mail/sendgrid');
 
 	return {
 
@@ -191,62 +191,7 @@ module.exports = (opts) => {
 
 		'entryAdd$' : (req , res , next) => {
 
-			if (req.params && req.params.payment && req.params.entry) {
-
-			let plan = query$.entryAdd1$(req , res , {});
-
-			let $e = req.params.entry;
-
-			let $p = req.params.payment;
-
-			db.query(plan , [$p] , (err , result) => {
-
-					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.word} entry. Please try again.`}); }
-
-					if (result.rowCount < 1) {
-
-			let plan2 = query$.entryAdd$(req , res , {});
-
-			db.query(plan2 , [$e , $p] , (err , result2) => {
-
-					if (err) { return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.word} entry. Please try again.`}); }
-
-					if (result2.rowCount < 1) {  return $rpd.handler(res , 400 , {'message' : `Unable to retrieve ${opts.word} entry. Please try again.`}); }
-
-					if (result2.rowCount >= 1) { let $result2 = result2.rows[0] 
-
-							if ($result2.status == 'success') { let transactionType = $result2.paymentType == 'department' ? 'Departmental Fee' : 'Faculty Fee';
-
-									let $entry = modelMessage.fulfilled(req , res , next , transactionType , $result2);
-
-									mailer.entryFulfilled(req , res , next , $result2.author , $entry.title , $entry.message); }
-
-							if ($result2.status == 'failed') { let transactionType = $result2.paymentType == 'department' ? 'Departmental Fee' : 'Faculty Fee';
-
-									let $entry = modelMessage.rejected(req , res , next , transactionType , $result2);
-
-									mailer.entryRejected(req , res , next , $result2.author , $entry.title , $entry.message);	}
-
-										return $rpd.handler(res , 200 , $result2);	}	});	}
-
-					if (result.rowCount >= 1) {
-
-									if ($result.status == 'success') { let transactionType = $result.paymentType == 'department' ? 'Departmental Fee' : 'Faculty Fee';
-
-										let $entry = modelMessage.fulfilled(req , res , next , transactionType , $result);
-
-											mailer.entryFulfilled(req , res , next , $result.author , $entry.title , $entry.message);	}
-
-									if ($result.status == 'failed') { let transactionType = $result.paymentType == 'department' ? 'Departmental Fee' : 'Faculty Fee';
-
-										let $entry = modelMessage.rejected(req , res , next , transactionType , $result);
-
-											mailer.entryRejected(req , res , next , $result.author , $entry.title , $entry.message); }
-
-											return $rpd.handler(res , 200 , $result);	}	}); }
-
-			else { return $rpd.handler(res , 404 , {'message' : `No ${opts.word} id provided. Please provide a valid ${opts.word} id.`});	}
-
+			
 		} ,
 
 		'entryDetail' : (req , res , next) => {

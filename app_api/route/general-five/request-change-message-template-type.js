@@ -6,19 +6,19 @@ let cUser = require('../../helper/confirm-user');
 
 let opts = {
 
-	'first' : 'RequestMessageTemplate' ,
+	'first' : 'RequestChangeMessageTemplateType' ,
 
-	'second' : 'Request Message Template' ,
+	'second' : 'Request Change Message Template Type' ,
 
-	'third' : 'request-message-template' ,
+	'third' : 'request-change-message-template-type' ,
 
-	'fourth' : 'requestMessageTemplate' ,
+	'fourth' : 'requestChangeMessageTemplateType' ,
 
-	'fifth' : 'RequestMessageTemplate' ,
+	'fifth' : 'RequestChangeMessageTemplateType' ,
 
-	'query' : 'request-message-template' ,
+	'query' : 'request-change-message-template-type' ,
 
-	'word' : 'Request Message Template' ,
+	'word' : 'Request Change Message Template Type' ,
 
 	'normalPrivilege' : ['student' , 'departmentPresident' , 'facultyPresident'] ,
 
@@ -58,7 +58,7 @@ router.route('/entry/create')
 
 			.post(
 
-				validator.requestMessageTemplate$ ,
+				validator.messageTemplateType$ ,
 
 				gctrl.entryAdd$);
 
@@ -78,7 +78,7 @@ router.route('/entry/:entry/update')
 
 			.put(
 
-				validator.requestMessageTemplate$ ,
+				validator.messageTemplateType$ ,
 
 				gctrl.entryUpdate$);
 

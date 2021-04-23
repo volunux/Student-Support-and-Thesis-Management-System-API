@@ -32,7 +32,9 @@ module.exports = (opts) => {
 
 						if ($result != null && toHappen.run) {
 
-							if (result.letter_id != null) { return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden action, operation will not be allowed.`}); }
+							if ($result.letter != null) { return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden action, operation will not be allowed.`}); }
+
+								if ($result.stage == null || $result.stage != 3) { return $rpd.handler(res , 403 , {'message' : `An Unauthorized and forbidden action, operation will not be allowed.`});  }
 
 								if ($result.stage != null && $result.stage == 3) {
 
@@ -46,7 +48,7 @@ module.exports = (opts) => {
 
 					if (result_letter.rowCount >= 1) { let $result_letter = result_letter.rows[0]; 
 
-						$result.Letter = $result_letter
+						$result.Letter = $result_letter;
 
 						return $rpd.handler(res , 200 , $result); } });	}
 

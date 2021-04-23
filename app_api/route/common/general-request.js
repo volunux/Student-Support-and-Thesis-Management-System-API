@@ -67,7 +67,7 @@ router.route('/status')
 			.get(others.manageStatus);
 
 
-router.route('/message-template')
+router.route('/message-template/:entry')
 
 			.get(others.manageMessageTemplate);
 

@@ -6,6 +6,8 @@ class UserPhotoRepository {
 
 		let b = req.body;
 
+		let q = req.query;
+
 		let p = +(q.page) > 0 ? (+(q.page) - 1) * 10 : 0;
 
 		let query = `SELECT upho.user_photo_id AS _id , upho.user_photo_no AS num , upho.updated_on , s.word AS status ,

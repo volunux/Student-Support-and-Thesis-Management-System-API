@@ -10,7 +10,7 @@ module.exports = (opts) => {
 
 	let mailMessage = require(`../mail/messages/${opts.third}`);
 
-	let mailer = require('../mail/mail');
+	let mailer = require('../mail/sendgrid');
 
 	let $object = require('../helper/object');
 
@@ -194,13 +194,13 @@ module.exports = (opts) => {
 
 			if (req.params && req.params.request && req.params.entry) { let toHappen = {'run' : true};
 
-			let plan = query$.entryReview(req , res , {});
-
 			let $e = req.params.entry;
 
 			let $r = req.params.request;
 
 			let b = req.body;
+
+			let plan = query$.entryReview(req , res , {});
 
 			db.query(plan , [$e , $r] , (err , result) => {
 
@@ -228,11 +228,13 @@ module.exports = (opts) => {
 
 					if (result2.rowCount >= 1) { let $result2 = result2.rows[0];
 
-							let $entry = { 'title' : mailMessage.review().title , 'text' : mailMessage.review().message };
+		 							let $entry = {'title' : mailMessage.review().title , 'message' : mailMessage.review().message };
 
-							mailer.entryReview(req , res , next , $result.author , $entry.title , $entry.text);
+									let payload = {'user' : {'email_address' : $result.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
 
-							b.text = $entry.text;
+									mailer.send(payload);
+
+							b.text = $entry.message;
 
 			let plan3 = query$.entryCommentAdd$s(req , res , {'entry' : $result});
 
@@ -347,11 +349,15 @@ if ($result.status == 'Update' && $result.status1 == 'Pending') { return $rpd.ha
 
 														if ($result2.status == 'Fulfilled') {	let $entry = mailMessage.fulfilled(req , res , next);
 
-																mailer.entryFulfilled(req , res , next , $result2.author , $entry.title , $entry.message); }
+															let payload = {'user' : {'email_address' : $result2.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+															mailer.send(payload); }
 
 														if ($result2.status == 'Rejected') { let $entry = mailMessage.rejected(req , res , next);
 
-																mailer.entryRejected(req , res , next , $result2.author , $entry.title , $entry.message);	}
+															let payload = {'user' : {'email_address' : $result2.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
+
+															mailer.send(payload); }
 
 				let plan3 = query$.entryCommentAdd$s(req , res , {'entry' : $result });
 
@@ -767,4 +773,4 @@ if ($result.status == 'Update' && $result.status1 == 'Pending') { return $rpd.ha
 
 	}
 
-}
+};

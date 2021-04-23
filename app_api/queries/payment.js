@@ -102,9 +102,9 @@ module.exports = {
 
 		}
 
-		let query = `SELECT gp.payment_reference , gp.created_on AS paid_on , gp.email_address , gp.full_name , gp.phone_number , gp.payment_no AS num , gp.slug , pses.amount AS amount , pses.name AS payment_session , 
+		let query = `SELECT gp.payment_reference , gp.created_on AS paid_on , gp.email_address , gp.full_name , gp.phone_number , gp.payment_no AS num , gp.slug ,
 
-									ps.word AS status , pt.name AS payment_type , dt.name AS department , ft.name AS faculty , gp.user_id
+									pses.amount AS amount , pses.name AS payment_session , ps.word AS status , pt.name AS payment_type , dt.name AS department , ft.name AS faculty , gp.user_id
 
 									FROM GENERAL_PAYMENT AS gp
 
@@ -135,13 +135,13 @@ module.exports = {
 
 		let query = `SELECT pt.payment_type_id AS payment_type , pt.name AS payment_type_name ,
 
-									(SELECT json_agg(row_to_json(ps))
+									(SELECT json_agg(row_to_json(pses))
 
-										FROM (SELECT ps.payment_session_id AS _id , ps.name , ps.slug
+										FROM (SELECT pses.payment_session_id AS _id , pses.name , pses.slug
 
-											FROM PAYMENT_SESSION AS ps 
+											FROM PAYMENT_SESSION AS pses 
 
-											WHERE ps.payment_type_id = pt.payment_type_id ) AS ps ) AS payment_session
+											WHERE pses.payment_type_id = pt.payment_type_id ) AS pses ) AS payment_session
 
 									FROM PAYMENT_TYPE AS pt
 
@@ -156,11 +156,11 @@ module.exports = {
 
 	'checkPaymentTypeAndSession' : (req , res , opts) => {
 
-		let query = `SELECT pt.payment_type_id AS payment_type , ps.payment_session_id AS payment_session
+		let query = `SELECT pt.payment_type_id AS payment_type , pses.payment_session_id AS payment_session
 
 									FROM PAYMENT_TYPE AS pt
 
-									INNER JOIN PAYMENT_SESSION AS ps ON ps.payment_session_id = $2 AND ps.payment_type_id = pt.payment_type_id
+									INNER JOIN PAYMENT_SESSION AS pses ON pses.payment_session_id = $2 AND pses.payment_type_id = pt.payment_type_id
 
 									WHERE pt.payment_type_id = $1
 
@@ -184,7 +184,7 @@ module.exports = {
 
 									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
 
-									WHERE gp.payment_type_id = $1 AND gp.user_id = $3 AND ps.name = 'success'
+									WHERE gp.user_id = $3 AND gp.payment_type_id = $1 AND gp.payment_session_id = $2 AND ps.name = 'success'
 
 									LIMIT 1
 
@@ -196,13 +196,13 @@ module.exports = {
 
 	'proceedEntryCreate' : (req , res , opts) => {
 
-		let query = `SELECT pt.payment_type_id AS payment_type , pt.name , pt.description , pt.abbreviation , ps.amount , ps.payment_session_id AS payment_session
+		let query = `SELECT pt.payment_type_id AS payment_type , pt.name , pt.description , pt.abbreviation , pses.amount , pses.payment_session_id AS payment_session
 
-									FROM PAYMENT_SESSION AS ps
+									FROM PAYMENT_SESSION AS pses
 
 									INNER JOIN PAYMENT_TYPE AS pt ON pt.payment_type_id = $1
 
-									WHERE ps.payment_session_id = $2
+									WHERE pses.payment_session_id = $2
 
 									LIMIT 1
 
@@ -223,7 +223,7 @@ module.exports = {
 
 									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
 
-									WHERE gp.payment_type_id = $1 AND gp.user_id = $3 AND ps.name = 'success'
+									WHERE gp.user_id = $3 AND gp.payment_type_id = $1 AND gp.payment_session_id = $2 AND ps.name = 'success'
 
 									LIMIT 1
 
@@ -292,9 +292,9 @@ module.exports = {
 
 		let b = req.body;
 
-		let query = `SELECT payment_id AS _id , p.payment_reference , pt.description , p.full_name , p.created_on AS paid_on , p.slug , 
+		let query = `SELECT general_payment_id AS _id , gp.payment_reference , pt.description , gp.full_name , gp.created_on AS paid_on , gp.slug , 
 
-									p.phone_number , p.email_address , d.name AS department , f.name AS faculty ,
+									gp.phone_number , gp.email_address , dt.name AS department , ft.name AS faculty ,
 
 									(SELECT row_to_json(u)
 
@@ -304,21 +304,21 @@ module.exports = {
 
 											INNER JOIN LEVEL AS l ON l.level_id = u.level_id
 
-											WHERE u.user_id = p.user_id) AS u ) AS author ,
+											WHERE u.user_id = gp.user_id) AS u ) AS author ,
 
 									ps.word AS status , pt.name AS payment_type
 
-									FROM GENERAL_PAYMENT AS p
+									FROM GENERAL_PAYMENT AS gp
 
 									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $1 AND pt.payment_type_id = gp.payment_type_id
 
-									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = p.status_id
+									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
 
-									INNER JOIN DEPARTMENT AS d ON d.department_id = p.department_id
+									INNER JOIN DEPARTMENT AS dt ON dt.department_id = gp.department_id
 
-									INNER JOIN FACULTY AS d ON f.faculty_id = p.faculty_id
+									INNER JOIN FACULTY AS ft ON ft.faculty_id = gp.faculty_id
 
-									WHERE p.payment_reference = ${b.payment_reference}
+									WHERE gp.payment_reference = ${b.payment_reference}
 
 									LIMIT 1
 								
@@ -349,7 +349,7 @@ module.exports = {
 
 									WHERE pt.slug = $1 AND pt.payment_type_id = ${b.payment_type} 
 
-									RETURNING payment_id AS _id , payment_no , slug , 
+									RETURNING general_payment_id AS _id , payment_no , slug , 
 
 										(SELECT name FROM PAYMENT_TYPE WHERE payment_type_id = ${b.payment_type} LIMIT 1) AS payment_type`;
 
@@ -373,7 +373,7 @@ module.exports = {
 
 											WHERE u.user_id = gp.user_id) AS users ) AS author ,
 
-									ps.word AS status , pt.name AS payment_type , pses.amount AS amount , pses.name AS payment_session
+									ps.word AS status , pt.name AS payment_type , pses.amount AS amount , pses.name AS payment_session , up.location AS profile_photo , usig.location AS signature
 
 									FROM GENERAL_PAYMENT AS gp
 
@@ -386,6 +386,10 @@ module.exports = {
 									INNER JOIN DEPARTMENT AS dt ON dt.department_id = gp.department_id
 
 									INNER JOIN FACULTY AS ft ON ft.faculty_id = gp.faculty_id
+
+									LEFT JOIN USER_PHOTO AS up ON up.user_id = gp.user_id
+
+									LEFT JOIN USER_SIGNATURE AS usig ON usig.user_id = gp.user_id
 
 									WHERE gp.slug = $1
 									
@@ -400,17 +404,17 @@ module.exports = {
 
 		let b = req.body;
 
-		let query = `SELECT p.payment_id AS _id , p.slug , p.user_id AS author , p.payment_type_id AS payment_type , p.status_id , ps.word AS status , grs1.word AS status1
+		let query = `SELECT gp.general_payment_id AS _id , gp.slug , gp.user_id AS author , gp.payment_type_id AS payment_type , gp.status_id , ps.word AS status , grs1.word AS status1
 
-									FROM GENERAL_PAYMENT AS p
+									FROM GENERAL_PAYMENT AS gp
 
-									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = p.status_id
+									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
 
 									INNER JOIN PAYMENT_STATUS AS grs1 ON grs1.payment_status_id = ${b.status}
 
-									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $2 AND pt.payment_type_id = p.payment_type_id
+									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $2 AND pt.payment_type_id = gp.payment_type_id
 
-									WHERE p.slug = $1
+									WHERE gp.slug = $1
 
 									LIMIT 1
 
@@ -424,13 +428,13 @@ module.exports = {
 
 		let b = req.body;
 
-		let query = `UPDATE PAYMENT AS p
+		let query = `UPDATE GENERAL_PAYMENT AS gp
 
 									SET status_id = $$${b.status}$$ , handler_id = $$${b.author}$$
 
 									FROM PAYMENT_STATUS AS ps 
 
-									WHERE p.slug = $$${opts.entry.slug}$$ AND ps.payment_status_id = $$${opts.entry.status_id}$$
+									WHERE gp.slug = $$${opts.entry.slug}$$ AND ps.payment_status_id = $$${opts.entry.status_id}$$
 
 									RETURNING (
 
@@ -624,19 +628,19 @@ module.exports = {
 
 	'isPaymentRefunded' : (req , res , next) => {
 
-		let query = `SELECT payment_id AS _id , p.slug , ps.word AS status , d.name AS department , f.name AS faculty
+		let query = `SELECT general_payment_id AS _id , gp.slug , ps.word AS status , dt.name AS department , ft.name AS faculty
 
-									FROM GENERAL_PAYMENT AS p
+									FROM GENERAL_PAYMENT AS gp
 
-									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $2 AND pt.payment_type_id = p.payment_type_id
+									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $2 AND pt.payment_type_id = gp.payment_type_id
 
-									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = p.status_id
+									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
 
-									INNER JOIN DEPARTMENT AS d ON d.department_id = p.department_id
+									INNER JOIN DEPARTMENT AS dt ON dt.department_id = gp.department_id
 
-									INNER JOIN FACULTY AS d ON f.faculty_id = p.faculty_id
+									INNER JOIN FACULTY AS ft ON ft.faculty_id = gp.faculty_id
 
-									WHERE p.slug = $1
+									WHERE gp.slug = $1
 
 								`;
 
