@@ -12,7 +12,7 @@ module.exports = {
 
 		let b = req.body;
 
-		let query = `SELECT rf.refund_id AS _id , rf.updated_on , rf.slug , rf.letter_id AS letter , grs.word AS status , grs1.word AS status1 , ${b.status} AS proposed_status ,
+		let query = `SELECT rf.refund_id AS _id , rf.updated_on , rf.slug , rf.letter_id AS letter , grs.word AS status , grs1.word AS status1 , $$${b.status}$$ AS proposed_status ,
 
 									rf.refund_no AS num , rf.department_id AS department , rf.faculty_id AS faculty ,
 
@@ -54,7 +54,7 @@ module.exports = {
 
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.general_request_status_id = rf.status_id
 
-									INNER JOIN GENERAL_REQUEST_STATUS AS grs1 ON grs1.general_request_status_id = ${b.status}
+									INNER JOIN GENERAL_REQUEST_STATUS AS grs1 ON grs1.general_request_status_id = $$${b.status}$$
 
 									WHERE rf.slug = $1
 
@@ -244,7 +244,7 @@ module.exports = {
 
 									(SELECT row_to_json(u) AS author FROM (SELECT email_address FROM USERS AS u WHERE u.user_id = rf.user_id) AS u) ,
 
-									(SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = ${b.status}) AS status
+									(SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = $$${b.status}$$) AS status
 
 								`;
 
@@ -269,7 +269,7 @@ module.exports = {
 
 									RETURNING (
 
-									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = ${b.status} ) ,
+									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = $$${b.status}$$ ) ,
 
 																						'author' , (SELECT row_to_json(u) AS user FROM (SELECT email_address FROM USERS AS u WHERE u.user_id = 1) AS u ) )
 									
@@ -301,7 +301,7 @@ module.exports = {
 
 									REFUND_LETTER(main_body , refund_letter_no , slug , entry_id , user_id , status_id)
 
-									SELECT $$${b.main_body}$$ , ${c} , $$${s}$$ , $$${opts.entry._id}$$ , ${b.author} , s.status_id
+									SELECT $$${b.main_body}$$ , ${c} , $$${s}$$ , $$${opts.entry._id}$$ , $$${b.author}$$ , s.status_id
 
 									FROM STATUS AS s
 
@@ -333,7 +333,7 @@ module.exports = {
 
 									RETURNING (
 
-									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = ${b.status} ) ,
+									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = $$${b.status}$$ ) ,
 
 																						'author' , (SELECT row_to_json(u) AS user FROM (SELECT email_address FROM USERS AS u WHERE u.user_id = 1) AS u ) )
 									

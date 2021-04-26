@@ -146,7 +146,7 @@ module.exports = {
 
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.word = 'Pending'
 
-									WHERE rt.slug = $1 AND rt.request_type_id = ${b.request_type} AND rt.unit_id = ${b.unit} 
+									WHERE rt.slug = $1 AND rt.request_type_id = $$${b.request_type}$$ AND rt.unit_id = $$${b.unit}$$ 
 
 									RETURNING general_request_id AS _id , general_request_no AS num , slug ,
 
@@ -154,7 +154,7 @@ module.exports = {
 
 											FROM REQUEST_TYPE AS rt 
 
-											WHERE rt.request_type_id = ${b.request_type} 
+											WHERE rt.request_type_id = $$${b.request_type}$$ 
 
 											LIMIT 1) AS request_type
 
@@ -432,7 +432,7 @@ module.exports = {
 
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.general_request_status_id = gr.status_id
 
-									INNER JOIN GENERAL_REQUEST_STATUS AS grs1 ON grs1.general_request_status_id = ${b.status}
+									INNER JOIN GENERAL_REQUEST_STATUS AS grs1 ON grs1.general_request_status_id = $$${b.status}$$
 
 									INNER JOIN REQUEST_TYPE AS rt ON rt.slug = $2 AND rt.request_type_id = gr.request_type_id
 

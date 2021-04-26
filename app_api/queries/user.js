@@ -256,11 +256,11 @@ module.exports = {
 		
 		let query1 = ``;
 
-		query1 += b.matriculation_number ? ` , matriculation_number = ${b.matriculation_number} ` : '';
+		query1 += b.matriculation_number ? ` , matriculation_number = $$${b.matriculation_number}$$ ` : '';
 
-		query1 += b.jamb_registration_number ? ` , jamb_registration_number = ${b.jamb_registration_number} ` : '';
+		query1 += b.jamb_registration_number ? ` , jamb_registration_number = $$${b.jamb_registration_number}$$ ` : '';
 
-		query1 += b.identity_number ? ` , identity_number = ${b.identity_number}` : '';
+		query1 += b.identity_number ? ` , identity_number = $$${b.identity_number}$$` : '';
 
 		let query = `UPDATE USERS
 
@@ -273,6 +273,8 @@ module.exports = {
 									RETURNING user_id AS _id , first_name , last_name , about
 
 								`;
+
+								console.log(query);
 
 		return query;
 

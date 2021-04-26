@@ -332,7 +332,7 @@ module.exports = {
 
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.general_request_status_id = mr.status_id
 
-									INNER JOIN GENERAL_REQUEST_STATUS AS grs1 ON grs1.general_request_status_id = ${b.status}
+									INNER JOIN GENERAL_REQUEST_STATUS AS grs1 ON grs1.general_request_status_id = $$${b.status}$$
 
 									WHERE mr.slug = $1
 
@@ -358,7 +358,7 @@ module.exports = {
 
 									RETURNING (
 
-									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = ${b.status} ) ,
+									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = $$${b.status}$$ ) ,
 
 																						'author' , (SELECT row_to_json(u) AS user 
 

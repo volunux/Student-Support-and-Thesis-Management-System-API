@@ -107,7 +107,7 @@ module.exports = {
 
 									REFUND (message , refund_no , slug , application_number , user_id , department_id , faculty_id , status_id)
 
-									SELECT $$${b.message}$$ , ${c} , $$${s}$$ , $$${uuidv4()}$$ , ${b.author} , ${b.department} , ${b.faculty} , grs.general_request_status_id
+									SELECT $$${b.message}$$ , ${c} , $$${s}$$ , $$${uuidv4()}$$ , $$${b.author}$$ , $$${b.department}$$ , $$${b.faculty}$$ , grs.general_request_status_id
 
 									FROM GENERAL_REQUEST_STATUS AS grs
 
@@ -243,7 +243,7 @@ module.exports = {
 
 		let query = `UPDATE REFUND AS rf
 
-									SET status_id = grs.general_request_status_id , handler_id = ${b.author} , stage_id = rfs.refund_stage_id
+									SET status_id = grs.general_request_status_id , handler_id = $$${b.author}$$ , stage_id = rfs.refund_stage_id
 
 									FROM GENERAL_REQUEST_STATUS AS grs
 
@@ -388,7 +388,7 @@ module.exports = {
 
 									RETURNING (
 
-									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = ${b.status} ) ,
+									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = $$${b.status}$$ ) ,
 
 																						'author' , (SELECT row_to_json(u) AS user FROM (SELECT email_address FROM USERS AS u WHERE u.user_id = 1) AS u ) )
 									
@@ -416,7 +416,7 @@ module.exports = {
 
 									RETURNING (
 
-									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = ${b.status} ) ,
+									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = $$${b.status}$$ ) ,
 
 																						'author' , (SELECT row_to_json(u) AS user FROM (SELECT email_address FROM USERS AS u WHERE u.user_id = 1) AS u ) )
 									
@@ -446,7 +446,7 @@ module.exports = {
 
 									RETURNING (
 
-									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = ${b.status} LIMIT 1 ) ,
+									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = $$${b.status}$$ LIMIT 1 ) ,
 
 																						'author' , (SELECT row_to_json(u) AS user FROM (SELECT email_address FROM USERS AS u WHERE u.user_id = 1 LIMIT 1) AS u ) )
 									

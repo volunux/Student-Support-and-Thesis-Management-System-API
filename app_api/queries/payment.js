@@ -265,7 +265,7 @@ module.exports = {
 
 									phone_number , full_name , email_address)
 
-									SELECT $$${opts.entry.data.reference}$$ , ${c} , $$${s}$$ , ${b.author} , $$${b.payment_type}$$ , $$${b.payment_session}$$ , 
+									SELECT $$${opts.entry.data.reference}$$ , ${c} , $$${s}$$ , $$${b.author}$$ , $$${b.payment_type}$$ , $$${b.payment_session}$$ , 
 
 									ps.payment_status_id , $$${u.department}$$ , $$${u.faculty}$$ ,
 
@@ -339,7 +339,7 @@ module.exports = {
 
 									GENERAL_PAYMENT(payment_reference , payment_no , slug , user_id , payment_type_id , status_id , department_id , faculty_id , phone_number , full_name , email_address)
 
-									SELECT $$${b.payment_reference}$$ , ${c} , $$${s}$$ , ${b.author} , $$${b.payment_type}$$ , ps.payment_status_id , $$${b.department}$$ , $$${b.faculty}$$ , $$${b.amount}$$ ,
+									SELECT $$${b.payment_reference}$$ , ${c} , $$${s}$$ , $$${b.author}$$ , $$${b.payment_type}$$ , ps.payment_status_id , $$${b.department}$$ , $$${b.faculty}$$ , $$${b.amount}$$ ,
 
 									$$${b.phone_number}$$ , $$${b.full_name}$$ , $$${b.email_address}$$
 
@@ -347,7 +347,7 @@ module.exports = {
 
 									INNER JOIN PAYMENT_STATUS AS ps ON ps.word = 'Success'
 
-									WHERE pt.slug = $1 AND pt.payment_type_id = ${b.payment_type} 
+									WHERE pt.slug = $1 AND pt.payment_type_id = $$${b.payment_type}$$
 
 									RETURNING general_payment_id AS _id , payment_no , slug , 
 
@@ -410,7 +410,7 @@ module.exports = {
 
 									INNER JOIN PAYMENT_STATUS AS ps ON ps.payment_status_id = gp.status_id
 
-									INNER JOIN PAYMENT_STATUS AS grs1 ON grs1.payment_status_id = ${b.status}
+									INNER JOIN PAYMENT_STATUS AS grs1 ON grs1.payment_status_id = $$${b.status}$$
 
 									INNER JOIN PAYMENT_TYPE AS pt ON pt.slug = $2 AND pt.payment_type_id = gp.payment_type_id
 
@@ -438,7 +438,7 @@ module.exports = {
 
 									RETURNING (
 
-									SELECT json_build_object('status' , (SELECT word FROM PAYMENT_STATUS AS ps WHERE ps.payment_status_id = ${b.status} ) ,
+									SELECT json_build_object('status' , (SELECT word FROM PAYMENT_STATUS AS ps WHERE ps.payment_status_id = $$${b.status}$$ ) ,
 
 																						'author' , (SELECT row_to_json(u) AS user FROM (SELECT email_address FROM USERS AS u WHERE u.user_id = 1) AS u ) )
 									

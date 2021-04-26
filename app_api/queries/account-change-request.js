@@ -92,7 +92,7 @@ module.exports = {
 
 									ACCOUNT_CHANGE_REQUEST (message , account_change_request_no , slug , application_number , user_id , status_id)
 
-									SELECT $$${b.message}$$ , ${c} , $$${s}$$ , $$${uuidv4()}$$ , ${b.author} , grs.general_request_status_id
+									SELECT $$${b.message}$$ , ${c} , $$${s}$$ , $$${uuidv4()}$$ , $$${b.author}$$ , grs.general_request_status_id
 
 									FROM GENERAL_REQUEST_STATUS AS grs
 
@@ -300,7 +300,7 @@ module.exports = {
 
 		let query = `UPDATE USERS AS u
 
-									SET role_id = ${b.new_role}
+									SET role_id = $$${b.new_role}$$
 
 									WHERE u.slug = $1
 
@@ -354,7 +354,7 @@ module.exports = {
 
 		let query = `UPDATE USERS AS u
 
-									SET unit_id = ${b.new_unit}
+									SET unit_id = $$${b.new_unit}$$
 
 									WHERE u.slug = $1
 
@@ -497,7 +497,7 @@ module.exports = {
 
 									INNER JOIN GENERAL_REQUEST_STATUS AS grs ON grs.general_request_status_id = acr.status_id
 
-									INNER JOIN GENERAL_REQUEST_STATUS AS grs1 ON grs1.general_request_status_id = ${b.status}
+									INNER JOIN GENERAL_REQUEST_STATUS AS grs1 ON grs1.general_request_status_id = $$${b.status}$$
 
 									WHERE acr.slug = $1
 
@@ -523,7 +523,7 @@ module.exports = {
 
 									RETURNING (
 
-									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = ${b.status} ) ,
+									SELECT json_build_object('status' , (SELECT word FROM GENERAL_REQUEST_STATUS AS grs WHERE grs.general_request_status_id = $$${b.status}$$ ) ,
 
 																						'author' , (SELECT row_to_json(u) AS user 
 
