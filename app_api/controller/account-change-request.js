@@ -147,7 +147,7 @@ module.exports = (opts) => {
 
 							if (result2.rowCount >= 1) { let $result2 = result2.rows[0];
 
-		 							let $entry = {'title' : mailMessage.review().title , 'message' : mailMessage.review().message };
+		 							let $entry = {'title' : mailMessage.review(req , res , next).title , 'message' : mailMessage.review(req , res , next).message };
 
 									let payload = {'user' : {'email_address' : $result.author.email_address} , 'title' : $entry.title , 'message' : $entry.message };
 

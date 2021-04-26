@@ -90,7 +90,7 @@ module.exports = (opts) => {
 
 								if (result2.rowCount >= 1) { let $result2 = result2.rows[0];
 
-		 							let $entry = {'title' : mailMessage.create2().title , 'message' : mailMessage.create2().message };
+		 							let $entry = {'title' : mailMessage.create2(req , res , next).title , 'message' : mailMessage.create2(req , res , next).message };
 
 									let payload = {'user' : {'email_address' : b.email_address} , 'title' : $entry.title , 'message' : $entry.message };
 
